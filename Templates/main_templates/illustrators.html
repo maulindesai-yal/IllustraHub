@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Illustrators - IllustraHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="{% url 'home' %}">ILLUSTRAHUB</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'collection' %}">Collection</a>
+            <a href="{% url 'illustrators' %}">Illustrators</a>
+            {% if user.is_authenticated %}
+                {% if user.user_type == 'illustrator' %}
+                    <a href="{% url 'upload_illustration' %}">Upload Illustration</a>
+                {% endif %}
+            {% endif %}   
+            <a href="{% url 'about_us' %}">About us</a>
+            <a href="{% url 'contact_us' %}">Contact Us</a>
+        </div>
+        <div class="icons">
+            <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
+            <i class="fas fa-shopping-cart"></i>
+            {% if user.is_authenticated %}
+                {% if user.user_type == 'illustrator' %}
+                    <a href="{% url 'illustrator_profile' %}"><i class="fas fa-user-circle"></i></a>
+                {% else %}
+                    <a href="{% url 'simple_user_profile' %}"><i class="fas fa-user-circle"></i></a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}"><i class="fas fa-user-circle"></i></a> 
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        <section class=" filters">
+            <form method="get" action="{% url 'illustrators' %}">
+                <label for= "sort">Sort By:</lable>
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="name_asc" {% if current_sort == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                    <option value="name_desc" {% if current_sort == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
+                </select>
+
+                <label for="country">Filter by Country:</label>
+                <select name="country" onchange="this.form.submit()">
+                    <option value="">All Countries</option>
+                    {% for code,name in country_choices %}
+                        {% if code != '' %}
+                        <option value="{{ code }}" {% if current_country == code %}selected{% endif %}>
+                            {{ name }}
+                        </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </form>
+        </section>
+        <section class="illustrators-grid">
+            {% for illustrator in illustrators %}
+                <div class="illustrator-card">
+                    <a href="{% url 'illustrator_details' email=illustrator.email %}">
+                        {% with first_image=illustrator.mains_illustrations.first %}
+                            {% if first_image %}
+                                <img src="{{ first_image.image.url }}" alt="{{ illustrator.get_full_name.title }}">
+                            {% endif %}
+                        {% endwith %}
+                        <h3>{{ illustrator.get_full_name.title }}</h3>
+                    </a>
+                </div>
+            {% empty %}
+                <p>No illustrators found matching your criteria.</p>
+            {% endfor %}
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 IllustraHub. All rights reserved.</p>
+    </footer>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

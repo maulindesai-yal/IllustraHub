@@ -1,0 +1,118 @@
+// Dynamic Header
+window.addEventListener('scroll', () => {
+    const header = document.querySelector('header');
+    header.style.background = window.scrollY > 50 
+        ? 'var(--header-gradient)'
+        : 'var(--header-gradient)';
+    header.style.boxShadow = window.scrollY > 50 
+        ? '0 4px 20px rgba(15,23,42,0.2)' 
+        : 'none';
+});
+
+// Image Preview with Validation
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+
+    if (file) {
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        const maxSize = 5 * 1024 * 1024;
+
+        if (!validTypes.includes(file.type)) {
+            showError('image', 'Invalid file format. Allowed: JPEG, PNG, GIF');
+            return;
+        }
+
+        if (file.size > maxSize) {
+            showError('image', 'File size exceeds 5MB limit');
+            return;
+        }
+
+        preview.classList.add('has-image');
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('hover-float');
+            img.style.borderRadius = '8px';
+            img.style.boxShadow = '0 4px 15px rgba(15,23,42,0.1)';
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.classList.remove('has-image');
+    }
+});
+
+// Advanced Form Validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    let isValid = true;
+    
+    // Clear previous errors
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.style.display = 'none';
+        el.parentElement.classList.remove('has-error');
+    });
+
+    // Required fields
+    document.querySelectorAll('[required]').forEach(field => {
+        if (!field.value.trim()) {
+            isValid = false;
+            showError(field.id, 'This field is required');
+        }
+    });
+
+    // Price validation
+    const priceInput = document.getElementById('price');
+    if (priceInput.value && (priceInput.value < 50 || isNaN(priceInput.value))) {
+        isValid = false;
+        showError('price', 'Minimum price is $50');
+    }
+
+    if (!isValid) e.preventDefault();
+});
+
+function showError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    const errorElement = field.parentNode.querySelector('.error-message');
+    field.parentNode.classList.add('has-error');
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+}
+
+// Card Hover Effect
+document.querySelectorAll('.illustrator-card, .illustration-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        card.style.transform = `
+            perspective(1000px)
+            rotateX(${(y - rect.height/2) * -0.2}deg)
+            rotateY(${(x - rect.width/2) * 0.2}deg)
+            translateY(-5px)
+        `;
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'none';
+    });
+});
+
+// Auto-slider
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slider img');
+
+function nextSlide() {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+}
+
+if (slides.length > 0) {
+    slides[0].classList.add('active');
+    setInterval(nextSlide, 5000);
+}

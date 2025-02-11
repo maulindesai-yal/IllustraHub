@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - IllustraHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="{% url 'home' %}">ILLUSTRAHUB</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'collection' %}">Collection</a>
+            <a href="{% url 'illustrators' %}">Illustrators</a>
+            {% if user.is_authenticated %}
+                {% if user.user_type == 'illustrator' %}
+                    <a href="{% url 'upload_illustration' %}">Upload Illustration</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="button">Login</a>
+            {% endif %}
+            <a href="{% url 'about_us' %}">About Us</a>
+            <a href="{% url 'contact_us' %}">Contact us</a>
+        </div>
+        <div class="icons">
+            <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
+            <i class="fas fa-shopping-cart"></i>
+            {% if user.is_authenticated %}
+                {% if user.user_type == 'illustrator' %}
+                    <a href="{% url 'illustrator_profile' %}"><i class="fas fa-user-circle"></i></a>
+                {% else %}
+                    <a href="{% url 'simple_user_profile' %}"><i class="fas fa-user-circle"></i></a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}"><i class="fas fa-user-circle"></i></a> 
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        <section>
+            <h2>About IllustraHub</h2>
+            <p>IllustraHub is a creative platform dedicated to connecting talented illustrators with art enthusiasts and potential clients.</p>
+        </section>
+
+        <section>
+            <h3>Our Mission</h3>
+            <p>We aim to provide a supportive and dynamic marketplace where illustrators can showcase their work, connect with opportunities, and grow their professional networks.</p>
+        </section>
+
+        <section>
+            <h3>What We Offer</h3>
+            <ul>
+                <li>A diverse platform for illustrators across multiple genres</li>
+                <li>Easy upload and management of artwork</li>
+                <li>Networking opportunities with potential clients</li>
+                <li>Marketplace for selling illustrations</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Our Team</h3>
+            <p>Founded by passionate artists and technologists who understand the challenges of the creative industry.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 IllustraHub. All rights reserved.</p>
+    </footer>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ illustrator.get_full_name }} - IllustraHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="{% url 'home' %}">ILLUSTRAHUB</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'collection' %}">Collection</a>
+            <a href="{% url 'illustrators' %}">Illustrators</a>
+            {% if user.is_authenticated %}
+                {% if user.user_type == 'illustrator' %}
+                    <a href="{% url 'upload_illustration' %}">Upload Illustration</a>
+                {% endif %}
+            {% endif %}   
+            <a href="{% url 'about_us' %}">About us</a>
+            <a href="{% url 'contact_us' %}">Contact Us</a>
+        </div>
+        <div class="icons">
+            <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
+            <i class="fas fa-shopping-cart"></i>
+            {% if user.is_authenticated %}
+                {% if user.user_type == 'illustrator' %}
+                    <a href="{% url 'illustrator_profile' %}"><i class="fas fa-user-circle"></i></a>
+                {% else %}
+                    <a href="{% url 'simple_user_profile' %}"><i class="fas fa-user-circle"></i></a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}"><i class="fas fa-user-circle"></i></a> 
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        <section class="illustrator-info">
+            <h1>{{ illustrator.get_full_name.title }}</h1>
+            {% if illustrator.country %}
+                <p>Country: {{ illustrator.get_country_display }}</p>
+            {% endif %}
+            {% if illustrator.biography %}
+                <p>{{ illustrator.biography }}</p>
+            {% endif %}
+        </section>
+
+        <section class="illustrations-grid">
+            <h2>Uploaded Illustrations</h2>
+            {% if illustrations %}
+                <div class="grid">
+                    {% for illustration in illustrations %}
+                        <div class="illustration-card">
+                            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                            <h3>{{ illustration.title }}</h3>
+                            <p>{{ illustration.description }}</p>
+                            {% if illustration.price %}
+                                <p>Price: ${{ illustration.price }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No illustrations uploaded yet.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 IllustraHub. All rights reserved.</p>
+    </footer>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

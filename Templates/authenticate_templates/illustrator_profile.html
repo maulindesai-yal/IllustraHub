@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <title>Illustrator Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="profile-container">
+            <h1>Illustrator Profile</h1>
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="{% if message.tags %}{{ message.tags }}-message{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p class="error-message">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit">Save Changes</button>
+            </form>
+
+            <div class="form-links">
+                <a href="{% url 'upload_illustration' %}" class="button">Upload Illustration</a>
+                <a href="{% url 'logout' %}" class="button">Logout</a>
+                <a href="{% url 'home' %}" class="button">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        // Initialize Select2 for the dropdown
+        $(document).ready(function() {
+            $('select[name="country"]').select2({
+                placeholder: "Select a country",
+                allowClear: true
+            });
+        });
+    </script>
+</body>
+</html>
