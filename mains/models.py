@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .category import Categories
+#from .category import Categories
 from django.conf import settings
 
 # Create your models here.
@@ -10,12 +10,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
-    @classmethod
-    def initialize_categories(cls):
-        # Method to create categories if they don't exist
-        for category_name in Categories:
-            cls.objects.get_or_create(name=category_name)
-
+    
     
 class Illustration(models.Model):
     title = models.CharField(max_length=200)

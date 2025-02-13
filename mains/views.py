@@ -5,7 +5,7 @@ from django.db.models import Min, Count
 from mains.models import Illustration ,Category
 from authenticate.models import CustomUser
 from authenticate.country_choices import COUNTRY_CHOICES
-from .category import Categories
+#from .category import Categories
 # Create your views here.
 
 def collection_view(request):
@@ -17,9 +17,12 @@ def collection_view(request):
 @login_required
 def upload_illustration_view(request):
     if request.user.user_type != 'illustrator':
-        messages.error(request, 'You do not have to permission to upload illustrations.')
+        messages.error(request, 'You do not have permission to upload illustrations.')
         return redirect('home')
     
+    categories = Category.objects.all() #fetching category from database
+
+
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
@@ -31,7 +34,7 @@ def upload_illustration_view(request):
         if not all([title, description, category_name, image]):
             messages.error(request, 'Please fill in all required fields.')
             return render(request, 'main_templates/upload_illustration.html', {
-                    'categories': Categories
+                'categories': categories
             })        
         try:
             # Get or create the category
@@ -54,22 +57,8 @@ def upload_illustration_view(request):
             messages.error(request, f'Error uploading illustration: {str(e)}')
     
     return render(request, 'main_templates/upload_illustration.html',{
-        'categories': Categories
+        'categories': categories
     })
-
-def contact_us_view(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
-        
-        # Here you would typically implement email sending logic
-        # For now, just print the message (replace with actual email sending)
-        print(f"Contact Form Submission:\nName: {name}\nEmail: {email}\nSubject: {subject}\nMessage: {message}") 
-        messages.success(request, 'Your message has been sent successfully!')
-        return redirect('contact_us')
-    return render(request, 'main_templates/contact_us.html')    
 
 def illustrators_view(request):
     illustrators = CustomUser.objects.filter(
@@ -102,6 +91,10 @@ def illustrators_view(request):
     }
     return render(request ,'main_templates/illustrators.html', context)
 
+@login_required
+def illustration_store_view(request):
+    return render (request , 'main_templates/illustration_store.html')
+
 def illustrator_details_view(request, email):
     illustrator = get_object_or_404(CustomUser, email=email)
     illustrations = Illustration.objects.filter(uploaded_by=illustrator).order_by('-uploaded_at')
@@ -110,6 +103,20 @@ def illustrator_details_view(request, email):
         'illustrator': illustrator,
         'illustrations': illustrations
     })
+
+def contact_us_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        # Here you would typically implement email sending logic
+        # For now, just print the message (replace with actual email sending)
+        print(f"Contact Form Submission:\nName: {name}\nEmail: {email}\nSubject: {subject}\nMessage: {message}") 
+        messages.success(request, 'Your message has been sent successfully!')
+        return redirect('contact_us')
+    return render(request, 'main_templates/contact_us.html')    
 
 def about_us_view(request):
     return render(request ,'main_templates/about_us.html')

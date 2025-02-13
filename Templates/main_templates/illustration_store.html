@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collection - IllustraHub</title>
+    <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,28 +40,7 @@
             {% endif %}
         </div>
     </header>
-    <main>
-        <div class="illustration-collection">
-            <h1>Illustration Collection</h1>
-            <div class="illustration-grid">
-                {% if illustrations %}
-                    {% for illustration in illustrations %}
-                        <div class="illustration-card">
-                            <a href="{{ illustration.image.url }}" target="_blank">
-                                <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
-                            </a>
-                            <h3>{{ illustration.title }}</h3>
-                            <div class="illustrator-name">
-                                <p>By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>No illustrations have been uploaded yet.</p>
-                {% endif %}
-            </div>
-        </div>
-    </main>
+    <h1>Illustration Store</h1>
     <footer>
         <p>&copy; 2025 IllustraHub. All rights reserved.</p>
     </footer>

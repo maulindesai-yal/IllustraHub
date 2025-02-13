@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header>
+    <header class="hero">
         <div class="logo">
             <a href="{% url 'home' %}">ILLUSTRAHUB</a>
         </div>
@@ -23,7 +23,7 @@
         </div>
         <div class="icons">
             <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
-            <i class="fas fa-shopping-cart"></i>
+            <a href="{% url 'illustration_store' %}"><i class="fas fa-shopping-cart"></i></a>
             <a href="{% url 'illustrator_profile' %}"><i class="fas fa-user-circle"></i></a>
         </div>
     </header>

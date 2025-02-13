@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
+    <header class="hero">
         <div class="logo">
             <a href="{% url 'home' %}">ILLUSTRAHUB</a>
         </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="icons">
             <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
-            <i class="fas fa-shopping-cart"></i>
+            <a href="{% url 'illustration_store' %}"><i class="fas fa-shopping-cart"></i></a>
             {% if user.is_authenticated %}
                 {% if user.user_type == 'illustrator' %}
                     <a href="{% url 'illustrator_profile' %}"><i class="fas fa-user-circle"></i></a>
