@@ -40,7 +40,28 @@
             {% endif %}
         </div>
     </header>
-    <h1>Illustration Store</h1>
+    <main>  
+        <div class="illustration-Store">
+            <h1>Illustration Store</h1>
+            <div class="illustration-grid">
+                {% if illustrations %}
+                    {% for illustration in illustrations %}
+                        <div class="illustration-card">
+                            <a href="{{ illustration.image.url }}" target="_blank">
+                                <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                            </a>
+                            <h3>{{ illustration.title }}</h3>
+                            <div class="illustrator-name">
+                                <p>By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No illustrations have been uploaded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
     <footer>
         <p>&copy; 2025 IllustraHub. All rights reserved.</p>
     </footer>

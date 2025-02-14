@@ -93,7 +93,11 @@ def illustrators_view(request):
 
 @login_required
 def illustration_store_view(request):
-    return render (request , 'main_templates/illustration_store.html')
+    illustrations = Illustration.objects.select_related('category')
+    return render (request , 'main_templates/illustration_store.html', {
+        'illustrations' : illustrations
+    })
+
 
 def illustrator_details_view(request, email):
     illustrator = get_object_or_404(CustomUser, email=email)
