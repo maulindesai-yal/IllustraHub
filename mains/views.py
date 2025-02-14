@@ -108,6 +108,13 @@ def illustrator_details_view(request, email):
         'illustrations': illustrations
     })
 
+@login_required
+def illustration_details_view(request, email):
+    illustration = get_object_or_404(Illustration, uploaded_by__email=email)
+    return render(request, 'main_templates/illustration_details.html',{
+        'illustration': illustration
+    })
+
 def contact_us_view(request):
     if request.method == 'POST':
         name = request.POST.get('name')

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{ illustration.title }}- IllustraHub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,7 +22,9 @@
                 {% if user.user_type == 'illustrator' %}
                     <a href="{% url 'upload_illustration' %}">Upload Illustration</a>
                 {% endif %}
-            {% endif %}   
+            {% else %}
+                <a href="{% url 'login' %}" class="button">Login</a>
+            {% endif %}
             <a href="{% url 'about_us' %}">About us</a>
             <a href="{% url 'contact_us' %}">Contact Us</a>
         </div>
@@ -40,32 +42,21 @@
             {% endif %}
         </div>
     </header>
-    <main>  
-        <div class="illustration-Store">
-            <h1>Illustration Store</h1>
-            <div class="illustration-grid">
-                {% if illustrations %}
-                    {% for illustration in illustrations %}
-                        <div class="illustration-card">
-                            <a href="{% url 'illustration_details' illustration.uploaded_by.email %}">
-                                <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
-                            </a>
-                            <h3>{{ illustration.title }}</h3>
-                            
-                            <div class="illustrator-name">
-                                <p>By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>No illustrations have been uploaded yet.</p>
-                {% endif %}
+
+    <main>
+        <div class="illustration-details-container">
+            <div class="illustration-image">
+                <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+            </div>
+            <div class="illustration-info">
+                <h1>{{ illustration.title }}</h1>
+                <p class="description"><strong>Description:</strong> {{ illustration.description }}</p>
+                <p class="category"><strong>Category:</strong> {{ illustration.category.name }}</p>
+                <p class="price"><strong>Price:</strong> ${{ illustration.price }}</p>
+                <p class="uploaded-by"><strong>Uploaded By:</strong> {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
+                <p class="uploaded-at"><strong>Uploaded At:</strong> {{ illustration.uploaded_at }}</p>
             </div>
         </div>
     </main>
-    <footer>
-        <p>&copy; 2025 IllustraHub. All rights reserved.</p>
-    </footer>
-    <script src="/static/js/script.js"></script>
 </body>
 </html>

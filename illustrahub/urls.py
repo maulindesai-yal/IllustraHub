@@ -35,6 +35,7 @@ from mains.views import (
     contact_us_view,
     illustrator_details_view,
     illustration_store_view,
+    illustration_details_view,
 )
 
 urlpatterns = [
@@ -54,6 +55,7 @@ urlpatterns = [
     path('about us/',about_us_view,name='about_us'),
     path('contact us/',contact_us_view,name='contact_us'),
     path('illustrator/<str:email>/',illustrator_details_view,name='illustrator_details'),
-    path('illustration store/',illustration_store_view,name = 'illustration_store')
+    path('illustration store/',illustration_store_view, name = 'illustration_store'),
+    path('illustration_details/<str:email>/',illustration_details_view, name = 'illustration_details'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #STATIC_URL,STATIC_ROOT
