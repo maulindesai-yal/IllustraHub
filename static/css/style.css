@@ -167,7 +167,106 @@ header {
     z-index: 1;
 }
 
-/* Add this to your existing CSS file */
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 1001;
+}
+
+/* Sidebar Popup */
+.sidebar-popup {
+    background: rgba(255, 255, 255, 0.1); /* Transparent effect */
+    backdrop-filter: blur(10px);
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    right: -300px;
+    top: 0;
+    padding: 20px;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Show Sidebar */
+.sidebar-overlay.active {
+    display: flex;
+}
+
+.sidebar-popup.active {
+    right: 0;
+}
+
+/* Sidebar Links */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 50px;
+}
+
+.sidebar-link {
+    display: block;
+    width: 80%;
+    text-align: center;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: white; /* Match homepage */
+    background: rgba(255, 255, 255, 0.15); /* Soft transparent white */
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-link:hover {
+    background: var(--hover-glow);
+    color: var(--primary-accent); /* Gold color effect */
+}
+
+
+/* Close Button */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.hamburger {
+    position: relative;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.hamburger:hover {
+    background: rgba(255, 255, 255, 0.2); /* Slight hover effect */
+}
 
 /* Slider Container */
 .slider-container {
@@ -575,8 +674,36 @@ button[type="submit"]:hover {
         gap: 1rem;
     }
 
+    .hero {
+        margin-right: 0;
+    }
+
     .hero h1 {
         font-size: 2.5rem;
+    }
+
+    .right-sidebar {
+        position: fixed;
+        right: 0;
+        width: 100%;
+        height: auto;
+        bottom: 0;
+        top: auto;
+        padding: 10px;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .sidebar-nav {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .sidebar-link {
+        padding: 8px;
+        font-size: 0.9rem;
     }
 
     .slider-container {

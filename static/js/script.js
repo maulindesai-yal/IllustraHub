@@ -9,42 +9,66 @@ window.addEventListener('scroll', () => {
         : 'none';
 });
 
-// Image Preview with Validation
-document.getElementById('image').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    const preview = document.getElementById('imagePreview');
-    preview.innerHTML = '';
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    const closeSidebar = document.getElementById("closeSidebar");
 
-    if (file) {
-        const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        const maxSize = 5 * 1024 * 1024;
+    sidebarToggle.addEventListener("click", function () {
+        sidebarOverlay.classList.add("active");
+        document.querySelector(".sidebar-popup").classList.add("active");
+    });
 
-        if (!validTypes.includes(file.type)) {
-            showError('image', 'Invalid file format. Allowed: JPEG, PNG, GIF');
-            return;
+    closeSidebar.addEventListener("click", function () {
+        sidebarOverlay.classList.remove("active");
+        document.querySelector(".sidebar-popup").classList.remove("active");
+    });
+
+    // Close sidebar if clicked outside
+    sidebarOverlay.addEventListener("click", function (event) {
+        if (event.target === sidebarOverlay) {
+            sidebarOverlay.classList.remove("active");
+            document.querySelector(".sidebar-popup").classList.remove("active");
         }
-
-        if (file.size > maxSize) {
-            showError('image', 'File size exceeds 5MB limit');
-            return;
-        }
-
-        preview.classList.add('has-image');
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.classList.add('hover-float');
-            img.style.borderRadius = '8px';
-            img.style.boxShadow = '0 4px 15px rgba(15,23,42,0.1)';
-            preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-    } else {
-        preview.classList.remove('has-image');
-    }
+    });
 });
+
+// Image Preview with Validation
+// document.getElementById('image').addEventListener('change', function(e) {
+//     const file = e.target.files[0];
+//     const preview = document.getElementById('imagePreview');
+//     preview.innerHTML = '';
+
+//     if (file) {
+//         const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+//         const maxSize = 5 * 1024 * 1024;
+
+//         if (!validTypes.includes(file.type)) {
+//             showError('image', 'Invalid file format. Allowed: JPEG, PNG, GIF');
+//             return;
+//         }
+
+//         if (file.size > maxSize) {
+//             showError('image', 'File size exceeds 5MB limit');
+//             return;
+//         }
+
+//         preview.classList.add('has-image');
+
+//         const reader = new FileReader();
+//         reader.onload = (e) => {
+//             const img = document.createElement('img');
+//             img.src = e.target.result;
+//             img.classList.add('hover-float');
+//             img.style.borderRadius = '8px';
+//             img.style.boxShadow = '0 4px 15px rgba(15,23,42,0.1)';
+//             preview.appendChild(img);
+//         };
+//         reader.readAsDataURL(file);
+//     } else {
+//         preview.classList.remove('has-image');
+//     }
+// });
 
 // Advanced Form Validation
 document.querySelector('form').addEventListener('submit', function(e) {

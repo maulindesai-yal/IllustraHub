@@ -28,6 +28,8 @@
             <a href="{% url 'about_us' %}">About us</a>
             <a href="{% url 'contact_us' %}">Contact Us</a>
         </div>
+
+        <!--icons-->
         <div class="icons">
             <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
             <a href="{% url 'illustration_store' %}"><i class="fas fa-shopping-cart"></i></a>
@@ -40,8 +42,38 @@
             {% else %}
                 <a href="{% url 'login' %}"><i class="fas fa-user-circle"></i></a> 
             {% endif %}
+            
+            <button id="sidebarToggle" class="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay">
+        <aside class="sidebar-popup">
+            <button id="closeSidebar" class="close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+            <nav class="sidebar-nav">
+                {% if user.is_authenticated %}
+                    {% if user.user_type == 'illustrator' %}
+                        <a href="{% url 'illustrator_profile' %}" class="sidebar-link">Profile</a>
+                    {% else %}
+                        <a href="{% url 'simple_user_profile' %}" class="sidebar-link">Profile</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}" class="sidebar-link">Login</a>
+                {% endif %}
+                <a href="{% url 'about_us' %}" class="sidebar-link">About Us</a>
+                <a href="{% url 'contact_us' %}" class="sidebar-link">Contact Us</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="sidebar-link">Logout</a>
+                {% endif %}
+            </nav>
+        </aside>
+    </div>
+
 
     <section class="hero">
         <h1>Welcome {% if user.is_authenticated %}{{ request.user.first_name }} to IllustraHub{% else %} to IllustraHub{% endif %}</h1>
@@ -54,10 +86,13 @@
             </div>
         </div>
     </section>
+
+
     <!-- Footer -->
     <footer>
         <p>&copy; 2025 IllustraHub. All Rights Reserved.</p>
     </footer>
+
     <script src="/static/js/script.js"></script>
 </body>
 </html>
