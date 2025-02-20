@@ -18,11 +18,13 @@
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'collection' %}">Collection</a>
             <a href="{% url 'illustrators' %}">Illustrators</a>
+            
             {% if user.is_authenticated %}
                 {% if user.user_type == 'illustrator' %}
                     <a href="{% url 'upload_illustration' %}">Upload Illustration</a>
                 {% endif %}
             {% endif %}   
+
         </div>
         <div class="icons">
             <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
@@ -58,8 +60,10 @@
                     {% else %}
                         <a href="{% url 'simple_user_profile' %}" class="sidebar-link">Profile</a>
                     {% endif %}
+                    <a href="{% url 'view_cart' %}" class="sidebar-link">Your Cart</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="sidebar-link">Profile</a>
+                    <a href="{% url 'login' %}" class="sidebar-link">Your Cart</a>
                 {% endif %}
 
                 {# Static Links #}
@@ -83,13 +87,21 @@
                 {% if illustrations %}
                     {% for illustration in illustrations %}
                         <div class="illustration-card">
-                            <a href="{{ illustration.image.url }}" target="_blank">
+                            <a href="{% url 'illustration_details' illustration.uploaded_by.email %}">
                                 <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
                             </a>
                             <h3>{{ illustration.title }}</h3>
                             <div class="illustrator-name">
                                 <p>By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
                             </div>
+                            {% if user.is_authenticated %}
+                                <form action="{% url 'add_to_cart' illustration.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="cart-btn">Add to Cart</button>
+                                </form>
+                            {% else %}
+                                <a href="{% url 'login' %}" class="cart-btn">Login to Add to Cart</a>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 {% else %}

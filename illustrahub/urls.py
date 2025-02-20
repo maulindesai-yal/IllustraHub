@@ -36,6 +36,7 @@ from mains.views import (
     illustrator_details_view,
     illustration_store_view,
     illustration_details_view,
+    add_to_cart,view_cart,remove_from_cart,
 )
 
 urlpatterns = [
@@ -57,5 +58,8 @@ urlpatterns = [
     path('illustrator/<str:email>/',illustrator_details_view,name='illustrator_details'),
     path('illustration store/',illustration_store_view, name = 'illustration_store'),
     path('illustration_details/<str:email>/',illustration_details_view, name = 'illustration_details'),
+    path('add-to-cart/<int:illustration_id>/', add_to_cart, name='add_to_cart'),
+    path('your_cart/', view_cart, name='view_cart'),
+    path('remove-from-cart/<int:cart_item_id>/', remove_from_cart, name='remove_from_cart'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #STATIC_URL,STATIC_ROOT

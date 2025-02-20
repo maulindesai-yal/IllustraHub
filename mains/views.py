@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Min, Count
-from mains.models import Illustration ,Category
+from mains.models import Illustration ,Category, CartItem
 from authenticate.models import CustomUser
 from authenticate.country_choices import COUNTRY_CHOICES
 #from .category import Categories
@@ -132,3 +132,38 @@ def contact_us_view(request):
 def about_us_view(request):
     return render(request ,'main_templates/about_us.html')
 
+@login_required
+def add_to_cart(request, illustration_id):
+    illustration = get_object_or_404(Illustration, id=illustration_id)
+
+    cart_item, created = CartItem.objects.get_or_create(
+        user = request.user,
+        illustration=illustration,
+        defaults={ 'quantity' : 1 }
+    )
+
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    messages.success(request, f"{illustration.title} added to cart successfully.")
+    return redirect('illustration_store')
+
+
+@login_required
+def view_cart(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    total_price = sum(item.get_total_price() for item in cart_items)
+
+    return render(request, 'main_templates/your_cart.html', {
+        'cart_items': cart_items,
+        'total_price': total_price
+    })
+
+
+@login_required
+def remove_from_cart(request, cart_item_id):
+    cart_item = get_object_or_404(CartItem, id=cart_item_id, user=request.user)
+    cart_item.delete()
+    messages.success(request, "Item removed from cart.")
+    return redirect('view_cart')

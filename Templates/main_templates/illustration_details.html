@@ -61,8 +61,10 @@
                     {% else %}
                         <a href="{% url 'simple_user_profile' %}" class="sidebar-link">Profile</a>
                     {% endif %}
+                    <a href="{% url 'view_cart' %}" class="sidebar-link">Your Cart</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="sidebar-link">Profile</a>
+                    <a href="{% url 'login' %}" class="sidebar-link">Your Cart</a>
                 {% endif %}
 
                 {# Static Links #}
@@ -94,5 +96,9 @@
             </div>
         </div>
     </main>
+    <footer>
+        <p>&copy; 2025 IllustraHub. All rights reserved.</p>
+    </footer>
+    <script src="/static/js/script.js"></script>
 </body>
 </html>

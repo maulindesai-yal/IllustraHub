@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-#from .category import Categories
 from django.conf import settings
 
 # Create your models here.
@@ -27,3 +26,15 @@ class Illustration(models.Model):
 
     def __str__(self):
         return self.title
+    
+class CartItem(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE)
+    illustration = models.ForeignKey('Illustration', on_delete = models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user' , 'illustration')
+
+    def get_total_price(self):
+        return self.illustration.price * self.quantity

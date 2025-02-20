@@ -18,6 +18,7 @@
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'collection' %}">Collection</a>
             <a href="{% url 'illustrators' %}">Illustrators</a>
+            
             {% if user.is_authenticated %}
                 {% if user.user_type == 'illustrator' %}
                     <a href="{% url 'upload_illustration' %}">Upload Illustration</a>
@@ -59,8 +60,10 @@
                     {% else %}
                         <a href="{% url 'simple_user_profile' %}" class="sidebar-link">Profile</a>
                     {% endif %}
+                    <a href="{% url 'view_cart' %}" class="sidebar-link">Your Cart</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="sidebar-link">Profile</a>
+                    <a href="{% url 'login' %}" class="sidebar-link">Your Cart</a>
                 {% endif %}
 
                 {# Static Links #}

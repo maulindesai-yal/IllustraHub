@@ -23,8 +23,35 @@
             <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
             <a href="{% url 'illustration_store' %}"><i class="fas fa-shopping-cart"></i></a>
             <a href="{% url 'illustrator_profile' %}"><i class="fas fa-user-circle"></i></a>
+            <button id="sidebarToggle" class="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
+
+    <!-- Sidebar Overlay Container -->
+    <div id="sidebarOverlay" class="sidebar-overlay">
+        <aside class="sidebar-popup">
+            <!-- Close Button -->
+            <button id="closeSidebar" class="close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <!-- Navigation Menu -->
+            <nav class="sidebar-nav">
+                {# for this page user will be always authenticated(illustrator) #}
+                <a href="{% url 'illustrator_profile' %}" class="sidebar-link">Profile</a>
+                <a href="{% url 'view_cart' %}" class="sidebar-link">Your Cart</a>
+                
+                {# Static Links #}
+                <a href="{% url 'about_us' %}" class="sidebar-link">About Us</a>
+                <a href="{% url 'contact_us' %}" class="sidebar-link">Contact Us</a>
+
+                {# Authentication Link #}
+                <a href="{% url 'logout' %}" class="sidebar-link">Logout</a>
+            </nav>
+        </aside>
+    </div>
 
     <main>
         <!-- Upload Illustration Section -->
