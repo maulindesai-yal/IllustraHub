@@ -15,7 +15,7 @@ def collection_view(request):
     })
 
 @login_required
-def upload_illustration_view(request):
+def my_artworks_view(request):
     if request.user.user_type != 'illustrator':
         messages.error(request, 'You do not have permission to upload illustrations.')
         return redirect('home')
@@ -33,7 +33,7 @@ def upload_illustration_view(request):
         # Validate required fields
         if not all([title, description, category_name, image]):
             messages.error(request, 'Please fill in all required fields.')
-            return render(request, 'main_templates/upload_illustration.html', {
+            return render(request, 'main_templates/my_artworks.html', {
                 'categories': categories
             })        
         try:
@@ -56,7 +56,7 @@ def upload_illustration_view(request):
         except Exception as e:
             messages.error(request, f'Error uploading illustration: {str(e)}')
     
-    return render(request, 'main_templates/upload_illustration.html',{
+    return render(request, 'main_templates/my_artworks.html',{
         'categories': categories
     })
 

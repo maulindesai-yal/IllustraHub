@@ -140,3 +140,11 @@ if (slides.length > 0) {
     slides[0].classList.add('active');
     setInterval(nextSlide, 5000);
 }
+
+
+document.getElementById("openUploadForm").addEventListener("click", function() {
+    document.getElementById("uploadPopup").style.display = "block";
+});
+document.getElementById("closePopup").addEventListener("click", function() {
+    document.getElementById("uploadPopup").style.display = "none";
+});

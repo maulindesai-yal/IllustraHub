@@ -29,7 +29,7 @@ from authenticate.views import (
 )
 from mains.views import (
     collection_view,
-    upload_illustration_view,
+    my_artworks_view,
     illustrators_view,
     about_us_view,
     contact_us_view,
@@ -51,7 +51,7 @@ urlpatterns = [
     path('reset-password/<str:uidb64>/<str:token>/', reset_password_view, name='reset_password'),
 
     path('collection/',collection_view,name='collection'),
-    path('upload illustration/',upload_illustration_view,name='upload_illustration'),
+    path('my artworks/',my_artworks_view,name='my_artworks'),
     path('illustrators',illustrators_view,name='illustrators'),
     path('about us/',about_us_view,name='about_us'),
     path('contact us/',contact_us_view,name='contact_us'),

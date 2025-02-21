@@ -11,7 +11,6 @@
     --hover-glow: rgba(255,215,0,0.1);
 
     /* Gradients */
-    --header-gradient: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
     --button-gradient: linear-gradient(45deg, #4F46E5 0%, #6366F1 100%);
     --accent-glow: linear-gradient(45deg, #FFD700, #FFE55C);
 }
@@ -32,7 +31,7 @@ body {
 
 /* Header Styles */
 header {
-    background: var(--header-gradient);
+    background: var(--primary-dark);
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -142,7 +141,7 @@ header {
 .hero {
     padding: 6rem 2rem;
     text-align: center;
-    background: var(--header-gradient);
+    background: var(--primary-dark);
     color: var(--surface-color);
     position: relative;
     overflow: hidden;
@@ -555,29 +554,62 @@ address p {
     line-height: 1;
 }
 
-/* Form Styles */
-.upload-illustration {
-    max-width: 800px;
-    margin: 3rem auto;
-    padding: 2.5rem;
-    background: var(--surface-color);
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(15,23,42,0.1);
-}
-
-.upload-illustration #imagePreview {
-    max-width: 100%;
-    height: auto;
-    overflow: hidden;
-    display: flex;
+/* Popup Modal Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
-    border: 1px solid #ddd;
-    padding: 10px;
-    box-sizing: border-box;
+    z-index: 1000;
 }
 
-.upload-illustration #imagePreview img{
+.popup-content {
+    background: var(--surface-color);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.2);
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+    animation: fadeIn 0.3 ease-in-out;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--primary-dark);
+}
+
+.upload-btn {
+    background: var(--button-gradient);
+    color: var(--surface-color);
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    position: absolute;
+    right: 2rem;
+}
+
+.upload-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.my-artworks #imagePreview img{
     max-width: 100%;
     max-height: 300px;
     display: block;

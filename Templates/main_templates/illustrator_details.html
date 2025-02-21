@@ -20,7 +20,7 @@
             <a href="{% url 'illustrators' %}">Illustrators</a>
             {% if user.is_authenticated %}
                 {% if user.user_type == 'illustrator' %}
-                    <a href="{% url 'upload_illustration' %}">Upload Illustration</a>
+                    <a href="{% url 'my_artworks' %}">My Artworks</a>
                 {% endif %}
             {% endif %}   
         </div>
