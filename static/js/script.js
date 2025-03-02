@@ -1,12 +1,13 @@
 // Dynamic Header
 window.addEventListener('scroll', () => {
     const header = document.querySelector('header');
-    header.style.background = window.scrollY > 50 
-        ? 'var(--header-gradient)'
-        : 'var(--header-gradient)';
-    header.style.boxShadow = window.scrollY > 50 
-        ? '0 4px 20px rgba(15,23,42,0.2)' 
-        : 'none';
+    if (window.scrollY > 50) {
+        header.style.background = 'var(--primary-dark)';
+        header.style.boxShadow = '0 4px 20px rgba(15,23,42,0.2)';
+    } else {
+        header.style.background = 'var(--primary-dark)';
+        header.style.boxShadow = '0 4px 20px rgba(15,23,42,0.15)';
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
