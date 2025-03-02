@@ -1,132 +1,45 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header class="hero">
-        <div class="logo">
-            <a href="{% url 'home' %}">ILLUSTRAHUB</a>
-        </div>
-        <div class="nav-buttons">
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'collection' %}">Collection</a>            
-            <a href="{% url 'illustrators' %}">Illustrators</a>
-            {% if user.is_authenticated %}
-                {% if user.user_type == 'illustrator' %}
-                    <a href="{% url 'my_artworks' %}">My Artworks</a>
-                {% endif %}
-            {% else %}
-                <a href="{% url 'login' %}" class="button">Login</a>
-            {% endif %}
-        </div>
-        <div class="icons">
-            <a href="{% url 'collection' %}"><i class="fas fa-search"></i></a>
-            <a href="{% url 'illustration_store' %}"><i class="fas fa-shopping-cart"></i></a>
-            {% if user.is_authenticated %}
-                {% if user.user_type == 'illustrator' %}
-                    <a href="{% url 'illustrator_profile' %}"><i class="fas fa-user-circle"></i></a>
-                {% else %}
-                    <a href="{% url 'simple_user_profile' %}"><i class="fas fa-user-circle"></i></a>
-                {% endif %}
-            {% else %}
-                <a href="{% url 'login' %}"><i class="fas fa-user-circle"></i></a> 
-            {% endif %}
-            <button id="sidebarToggle" class="hamburger">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </header>
+{% extends 'main_templates/main_base.html' %}
 
-    <!-- Sidebar Overlay Container -->
-    <div id="sidebarOverlay" class="sidebar-overlay">
-        <aside class="sidebar-popup">
-            <!-- Close Button -->
-            <button id="closeSidebar" class="close-btn">
-                <i class="fas fa-times"></i>
-            </button>
-            
-            <!-- Navigation Menu -->
-            <nav class="sidebar-nav">
-                {# Profile Link - Conditional rendering based on user type #}
-                {% if user.is_authenticated %}
-                    {% if user.user_type == 'illustrator' %}
-                        <a href="{% url 'illustrator_profile' %}" class="sidebar-link">Profile</a>
-                    {% else %}
-                        <a href="{% url 'simple_user_profile' %}" class="sidebar-link">Profile</a>
-                    {% endif %}
-                    <a href="{% url 'view_cart' %}" class="sidebar-link">Your Cart</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="sidebar-link">Profile</a>
-                    <a href="{% url 'login' %}" class="sidebar-link">Your Cart</a>
-                {% endif %}
+{% block title %}Contact Us{% endblock %}
 
-                {# Static Links #}
-                <a href="{% url 'about_us' %}" class="sidebar-link">About Us</a>
-                <a href="{% url 'contact_us' %}" class="sidebar-link">Contact Us</a>
+{% block content %}
+    <section>
+        <h2>Contact Us</h2>
+        <p>Have questions or feedback? We'd love to hear from you!</p>
 
-                {# Authentication Link #}
-                {% if user.is_authenticated %}
-                    <a href="{% url 'logout' %}" class="sidebar-link">Logout</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="sidebar-link">Login</a>
-                {% endif %}
-            </nav>
-        </aside>
-    </div>
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
 
+            <div>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
 
-    <main>
-        <section>
-            <h2>Contact Us</h2>
-            <p>Have questions or feedback? We'd love to hear from you!</p>
+            <div>
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
 
-            <form method="post">
-                {% csrf_token %}
-                <div>
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
+            <div>
+                <label for="message">Your Message</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
 
-                <div>
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
+            <button type="submit">Send Message</button>
+        </form>
+    </section>
 
-                <div>
-                    <label for="subject">Subject</label>
-                    <input type="text" id="subject" name="subject" required>
-                </div>
-
-                <div>
-                    <label for="message">Your Message</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-                </div>
-
-                <button type="submit">Send Message</button>
-            </form>
-        </section>
-
-        <section>
-            <h3>Contact Information</h3>
-            <address>
-                <p>IllustraHub</p>
-                <p>Email: support@illustrahub.com</p>
-                <p>Phone: +91 (555) 123-4567</p>
-                <p>Address: 123 Creative Street, Gandhinagar, Gujrat, PC 382421</p>
-            </address>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 IllustraHub. All rights reserved.</p>
-    </footer>
-    <script src="/static/js/script.js"></script>
-</body>
-</html>
+    <section>
+        <h3>Contact Information</h3>
+        <address>
+            <p>IllustraHub</p>
+            <p>Email: support@illustrahub.com</p>
+            <p>Phone: +91 (555) 123-4567</p>
+            <p>Address: 123 Creative Street, Gandhinagar, Gujrat, PC 382421</p>
+        </address>
+    </section>
+{% endblock %}

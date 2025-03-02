@@ -50,9 +50,12 @@ def login_view(request):
 @login_required
 def logout_view(request):
     if request.method == 'POST':
+
+        request.session.flush()
         logout(request)
         messages.success(request, "you have been logged out.")
         return redirect('login')
+    
     return render (request, 'authenticate_templates/logout.html')
 
 
