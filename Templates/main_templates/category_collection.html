@@ -1,0 +1,39 @@
+{% extends 'main_templates/main_base.html' %}
+{% block title %}Illustrators in {{ category.name }}{% endblock %}
+{% block content %}
+    <div class="illustrators-list">
+        <h1>Illustrators in {{ category.name }}</h1>
+        
+        {% if illustrators_with_illustrations %}
+            <div class="illustrator-grid">
+                {% for item in illustrators_with_illustrations %}
+                    <div class="illustrator-card">
+                        <a href="{% url 'illustrator_category_collection' category.id item.illustrator.email %}">
+                            <h3>{{ item.illustrator.first_name }} {{ item.illustrator.last_name }}</h3>
+                            
+                            {% if item.illustrator.profile_picture %}
+                                <img src="{{ item.illustrator.profile_picture.url }}" alt="{{ item.illustrator.first_name }}">
+                            {% endif %}
+                            
+                            <p>{{ item.illustrator.country }}</p>
+
+                            <!-- Show First Uploaded Illustration -->
+                            {% if item.illustration %}
+                                <div class="illustration-preview">
+                                    <img src="{{ item.illustration.image.url }}" alt="{{ item.illustration.title }}">
+                                </div>
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No illustrators have uploaded work in this category.</p>
+        {% endif %}
+
+        
+        <div class="back-link">
+            <a href="{% url 'collection' %}">Back to Categories</a>
+        </div>
+    </div>
+{% endblock %}

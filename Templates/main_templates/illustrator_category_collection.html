@@ -1,0 +1,37 @@
+{% extends 'main_templates/main_base.html' %}
+{% block title %}{{ illustrator.first_name }}'s {{ category.name }} Illustrations{% endblock %}
+{% block content %}
+    <div class="illustration-collection">
+        <h1>{{ illustrator.first_name }} {{ illustrator.last_name }}'s {{ category.name }} Illustrations</h1>
+        
+        <div class="illustration-grid">
+            {% if illustrations %}
+                {% for illustration in illustrations %}
+                    <div class="illustration-card">
+                        <a href="{% url 'illustration_details' illustration.id %}">
+                            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                        </a>
+                        <h3>{{ illustration.title }}</h3>
+                        <div class="illustrator-info">
+                            <p>Uploaded: {{ illustration.uploaded_at|date:"M d, Y" }}</p>
+                        </div>
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'add_to_cart' illustration.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="cart-btn">Add to Cart</button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="cart-login-btn">Login to Add to Cart</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No illustrations in this category by this illustrator.</p>
+            {% endif %}
+        </div>
+        
+        <div class="back-link">
+            <a href="{% url 'category_collection' category.id %}">Back to Illustrators</a>
+        </div>
+    </div>
+{% endblock %}

@@ -9,8 +9,67 @@ from authenticate.country_choices import COUNTRY_CHOICES
 # Create your views here.
 
 def collection_view(request):
-    illustrations = Illustration.objects.select_related('category').order_by('-uploaded_at')
-    return render(request ,'main_templates/collection.html',{
+    # Get all categories with their first (most recent) illustration
+    categories = Category.objects.all()
+    category_illustrations = []
+    
+    for category in categories:
+        # Get the first uploaded illustration in this category
+        first_illustration = Illustration.objects.filter(
+            category=category
+        ).order_by('-uploaded_at').first()
+        
+        if first_illustration:
+            category_illustrations.append({
+                'category': category,
+                'illustration': first_illustration
+            })
+    
+    return render(request, 'main_templates/collection.html', {
+        'category_illustrations': category_illustrations
+    })
+
+def category_collection_view(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+
+    # Get illustrators who have uploaded illustrations in this category
+    illustrators = CustomUser.objects.filter(
+        user_type='illustrator',
+        mains_illustrations__category=category
+    ).distinct()
+
+    # Create a list of illustrators with their first uploaded illustration in this category
+    illustrators_with_illustrations = []
+    for illustrator in illustrators:
+        first_illustration = Illustration.objects.filter(
+            uploaded_by=illustrator,
+            category=category
+        ).order_by('uploaded_at').first()  # Get the first uploaded illustration
+
+        if first_illustration:
+            illustrators_with_illustrations.append({
+                'illustrator': illustrator,
+                'illustration': first_illustration
+            })
+
+    return render(request, 'main_templates/category_collection.html', {
+        'category': category,
+        'illustrators_with_illustrations': illustrators_with_illustrations
+    })
+
+def illustrator_category_collection_view(request, category_id, illustrator_email):
+    category = get_object_or_404(Category, id=category_id)
+    illustrator = get_object_or_404(CustomUser, email=illustrator_email)
+    
+    # Get all illustrations by this illustrator in this category
+    illustrations = Illustration.objects.filter(
+        category=category,
+        uploaded_by=illustrator
+    ).order_by('-uploaded_at')
+    
+    return render(request, 'main_templates/illustrator_category_collection.html', {
+        'category': category,
+        'illustrator': illustrator,
         'illustrations': illustrations
     })
 
@@ -109,8 +168,8 @@ def illustrator_details_view(request, email):
     })
 
 @login_required
-def illustration_details_view(request, email):
-    illustration = get_object_or_404(Illustration, uploaded_by__email=email)
+def illustration_details_view(request, illustration_id):
+    illustration = get_object_or_404(Illustration, id=illustration_id)
     return render(request, 'main_templates/illustration_details.html',{
         'illustration': illustration
     })

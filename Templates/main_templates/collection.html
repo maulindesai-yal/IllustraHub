@@ -4,24 +4,16 @@
     <div class="illustration-collection">
         <h1>Illustration Collection</h1>
         <div class="illustration-grid">
-            {% if illustrations %}
-                {% for illustration in illustrations %}
+            {% if category_illustrations %}
+                {% for item in category_illustrations %}
                     <div class="illustration-card">
-                        <a href="{% url 'illustration_details' illustration.uploaded_by.email %}">
-                            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                        <a href="{% if user.is_authenticated %}{% url 'category_collection' item.category.id %}{% else %}{% url 'login' %}{% endif %}">
+                            <img src="{{ item.illustration.image.url }}" alt="{{ item.illustration.title }}">
                         </a>
-                        <h3>{{ illustration.title }}</h3>
+                        <h3>{{ item.category.name }}</h3>
                         <div class="illustrator-name">
-                            <p>By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
+                            <p>By: {{ item.illustration.uploaded_by.first_name }} {{ item.illustration.uploaded_by.last_name }}</p>
                         </div>
-                        {% if user.is_authenticated %}
-                            <form action="{% url 'add_to_cart' illustration.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="cart-btn">Add to Cart</button>
-                            </form>
-                        {% else %}
-                            <a href="{% url 'login' %}" class="cart-login-btn">Login to Add to Cart</a>
-                        {% endif %}
                     </div>
                 {% endfor %}
             {% else %}

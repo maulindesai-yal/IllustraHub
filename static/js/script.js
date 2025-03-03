@@ -107,26 +107,6 @@ function showError(fieldId, message) {
     errorElement.style.display = 'block';
 }
 
-// Card Hover Effect
-document.querySelectorAll('.illustrator-card, .illustration-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        card.style.transform = `
-            perspective(1000px)
-            rotateX(${(y - rect.height/2) * -0.2}deg)
-            rotateY(${(x - rect.width/2) * 0.2}deg)
-            translateY(-5px)
-        `;
-    });
-
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'none';
-    });
-});
-
 // Auto-slider
 let currentSlide = 0;
 const slides = document.querySelectorAll('.slider img');

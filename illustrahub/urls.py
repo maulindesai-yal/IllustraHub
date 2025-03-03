@@ -28,7 +28,7 @@ from authenticate.views import (
     reset_password_view
 )
 from mains.views import (
-    collection_view,
+    collection_view,category_collection_view,illustrator_category_collection_view,
     my_artworks_view,
     illustrators_view,
     about_us_view,
@@ -51,13 +51,15 @@ urlpatterns = [
     path('reset-password/<str:uidb64>/<str:token>/', reset_password_view, name='reset_password'),
 
     path('collection/',collection_view,name='collection'),
+    path('category/<int:category_id>/illustrators/', category_collection_view, name='category_collection'),
+    path('category/<int:category_id>/illustrator/<str:illustrator_email>/', illustrator_category_collection_view, name='illustrator_category_collection'),
     path('my artworks/',my_artworks_view,name='my_artworks'),
     path('illustrators',illustrators_view,name='illustrators'),
     path('about us/',about_us_view,name='about_us'),
     path('contact us/',contact_us_view,name='contact_us'),
     path('illustrator/<str:email>/',illustrator_details_view,name='illustrator_details'),
     path('illustration store/',illustration_store_view, name = 'illustration_store'),
-    path('illustration_details/<str:email>/',illustration_details_view, name = 'illustration_details'),
+    path('illustration_details/<int:illustration_id>/',illustration_details_view, name = 'illustration_details'),
     path('add-to-cart/<int:illustration_id>/', add_to_cart, name='add_to_cart'),
     path('your_cart/', view_cart, name='view_cart'),
     path('remove-from-cart/<int:cart_item_id>/', remove_from_cart, name='remove_from_cart'),
