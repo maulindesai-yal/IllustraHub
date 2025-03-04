@@ -80,27 +80,34 @@ def my_artworks_view(request):
         return redirect('home')
     
     categories = Category.objects.all() #fetching category from database
-
+    user_artworks = Illustration.objects.filter(uploaded_by=request.user).order_by('-uploaded_at')
 
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
-        category_name = request.POST.get('category')
+        category_id = request.POST.get('category')
         price = request.POST.get('price')
         image = request.FILES.get('image')
 
         # Validate required fields
-        if not all([title, description, category_name, image]):
+        if not all([title, description, category_id, image]):
             messages.error(request, 'Please fill in all required fields.')
             return render(request, 'main_templates/my_artworks.html', {
-                'categories': categories
+                'categories': categories,
+                'user_artworks': user_artworks
             })        
         try:
-            # Get or create the category
-            category, _ = Category.objects.get_or_create(name=category_name)
+
+            if not category_id:
+                messages.error(request, 'Invalid category selection. Please try again.')
+                return render(request, 'main_templates/my_artworks.html', {
+                    'categories': categories,
+                    'user_artworks': user_artworks
+                })  
+
+            category = get_object_or_404(Category, id=category_id)
             
-            # Create the illustration
-            illustration = Illustration.objects.create(
+            Illustration.objects.create(
                 title=title,
                 description=description,
                 category=category,
@@ -110,13 +117,14 @@ def my_artworks_view(request):
             )
             
             messages.success(request, 'Illustration uploaded successfully!')
-            return redirect('collection')
+            return redirect('my_artworks')
         
         except Exception as e:
             messages.error(request, f'Error uploading illustration: {str(e)}')
     
     return render(request, 'main_templates/my_artworks.html',{
-        'categories': categories
+        'categories': categories,
+        'user_artworks': user_artworks
     })
 
 def illustrators_view(request):

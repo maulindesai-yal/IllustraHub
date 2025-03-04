@@ -9,20 +9,15 @@
                 {% for item in illustrators_with_illustrations %}
                     <div class="illustrator-card">
                         <a href="{% url 'illustrator_category_collection' category.id item.illustrator.email %}">
-                            <h3>{{ item.illustrator.first_name }} {{ item.illustrator.last_name }}</h3>
-                            
                             {% if item.illustrator.profile_picture %}
                                 <img src="{{ item.illustrator.profile_picture.url }}" alt="{{ item.illustrator.first_name }}">
                             {% endif %}
                             
-                            <p>{{ item.illustrator.country }}</p>
-
                             <!-- Show First Uploaded Illustration -->
                             {% if item.illustration %}
-                                <div class="illustration-preview">
-                                    <img src="{{ item.illustration.image.url }}" alt="{{ item.illustration.title }}">
-                                </div>
+                                <img src="{{ item.illustration.image.url }}" alt="{{ item.illustration.title }}">
                             {% endif %}
+                            <h3>{{ item.illustrator.first_name }} {{ item.illustrator.last_name }}</h3>
                         </a>
                     </div>
                 {% endfor %}
@@ -31,7 +26,6 @@
             <p>No illustrators have uploaded work in this category.</p>
         {% endif %}
 
-        
         <div class="back-link">
             <a href="{% url 'collection' %}">Back to Categories</a>
         </div>

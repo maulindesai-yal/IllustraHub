@@ -3,14 +3,18 @@
 {% block content %}
     <div class="illustration-collection">
         <h1>Illustration Collection</h1>
+        <h2 class="section-title">Categories</h2>
         <div class="illustration-grid">
             {% if category_illustrations %}
                 {% for item in category_illustrations %}
                     <div class="illustration-card">
                         <a href="{% if user.is_authenticated %}{% url 'category_collection' item.category.id %}{% else %}{% url 'login' %}{% endif %}">
+                            <div class="category-overlay">
+                                <h3>{{ item.category.name }}</h3>
+                            </div>
                             <img src="{{ item.illustration.image.url }}" alt="{{ item.illustration.title }}">
                         </a>
-                        <h3>{{ item.category.name }}</h3>
+
                         <div class="illustrator-name">
                             <p>By: {{ item.illustration.uploaded_by.first_name }} {{ item.illustration.uploaded_by.last_name }}</p>
                         </div>
