@@ -37,6 +37,7 @@ from mains.views import (
     illustration_store_view,
     illustration_details_view,
     add_to_cart,view_cart,remove_from_cart,
+    buy_now,checkout_page,order_success
 )
 
 urlpatterns = [
@@ -63,5 +64,10 @@ urlpatterns = [
     path('add-to-cart/<int:illustration_id>/', add_to_cart, name='add_to_cart'),
     path('your_cart/', view_cart, name='view_cart'),
     path('remove-from-cart/<int:cart_item_id>/', remove_from_cart, name='remove_from_cart'),
+    path('buy_now/<int:illustration_id>/', buy_now, name='buy_now'),#for buy illustration
+    path('checkout/<int:illustration_id>/', checkout_page, name='checkout_page'),
+    path('order-success/', order_success, name='order_success'),
+
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #STATIC_URL,STATIC_ROOT

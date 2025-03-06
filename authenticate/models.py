@@ -43,6 +43,8 @@ class CustomUser (AbstractBaseUser, PermissionsMixin):
     email       = models.EmailField(unique=True , primary_key=True)
     biography   = models.TextField(blank=True, null= True)
     country     = models.CharField(max_length=2, choices=COUNTRY_CHOICES[1:], blank=True, null=True)
+    state       = models.CharField(max_length=100, blank=True, null=True)
+    zip_code    = models.CharField(max_length=20, blank=True, null=True)
     user_type   = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='simple_user')
     is_active   = models.BooleanField(default=True)
     is_staff    = models.BooleanField(default=False)

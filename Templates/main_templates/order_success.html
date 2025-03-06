@@ -1,0 +1,11 @@
+{% extends 'main_templates/main_base.html' %}
+
+{% block title %}Order Successful{% endblock %}
+
+{% block content %}
+    <div class="success-container">
+        <h1>Thank You!</h1>
+        <p>Your order has been placed successfully.</p>
+        <a href="{% url 'home' %}" class="home-btn">Go Back to Home</a>
+    </div>
+{% endblock %}

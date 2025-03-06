@@ -200,6 +200,46 @@ def about_us_view(request):
     return render(request ,'main_templates/about_us.html')
 
 @login_required
+def buy_now(request, illustration_id):
+    illustration = get_object_or_404(Illustration, id=illustration_id)
+    # Redirect to checkout (or implement direct purchase logic)
+    return redirect('checkout_page', illustration_id=illustration.id)
+
+
+@login_required
+def checkout_page(request, illustration_id):
+    illustration = get_object_or_404(Illustration, id=illustration_id)
+
+
+    user = request.user
+    user_profile = CustomUser.objects.get(email=user.email)
+
+    if request.method == 'POST':
+        # Get user input
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        address = request.POST.get('address')
+        country = request.POST.get('country')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip_code')
+        payment_method = request.POST.get('payment_method')
+
+        # Here, you would typically save the order in the database
+        # Example: Order.objects.create(user=request.user, illustration=illustration, ...)
+
+        # Redirect to a success page
+        return redirect('order_success')
+
+    return render(request, 'main_templates/checkout.html', {
+        'illustration': illustration,
+        'user_profile': user_profile
+    })
+
+def order_success(request):
+    return render(request, 'main_templates/order_success.html')
+
+
+@login_required
 def add_to_cart(request, illustration_id):
     illustration = get_object_or_404(Illustration, id=illustration_id)
 

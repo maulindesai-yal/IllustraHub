@@ -9,14 +9,27 @@
             {% if illustrations %}
                 {% for illustration in illustrations %}
                     <div class="illustration-card">
-                        <a href="{% url 'illustration_details' illustration.uploaded_by.email %}">
+                        <a href="{% url 'illustration_details' illustration.id %}">
                             <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
                         </a>
                         <h3>{{ illustration.title }}</h3>
                         
-                        <div class="illustrator-name">
-                            <p>By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
-                        </div>
+                        <p class="price"><strong>Price:</strong> ${{ illustration.price }}</p>
+                        <p class="illustrator-name">By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
+                        
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'add_to_cart' illustration.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="cart-btn">Add to Cart</button>
+                            </form>
+                            <form action="{% url 'buy_now' illustration.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="buy-btn">Buy Now</button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="cart-login-btn">Login to Add to Cart</a>
+                        {% endif %}
+                        
                     </div>
                 {% endfor %}
             {% else %}
