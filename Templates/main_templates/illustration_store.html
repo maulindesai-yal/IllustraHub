@@ -5,6 +5,11 @@
 {% block content %}
     <div class="illustration-Store">
         <h1>Illustration Store</h1>
+
+        <div class="bidding-section">
+            <a href="{% url 'live_bidding' %}" class="live-bid-btn">Join Live Bidding</a>
+        </div>
+
         <div class="illustration-grid">
             {% if illustrations %}
                 {% for illustration in illustrations %}
@@ -17,19 +22,11 @@
                         <p class="price"><strong>Price:</strong> ${{ illustration.price }}</p>
                         <p class="illustrator-name">By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
                         
-                        {% if user.is_authenticated %}
-                            <form action="{% url 'add_to_cart' illustration.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="cart-btn">Add to Cart</button>
-                            </form>
-                            <form action="{% url 'buy_now' illustration.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="buy-btn">Buy Now</button>
-                            </form>
+                        {% if illustration.selling_type == "bid" %}
+                            <a href="{% url 'illustration_details' illustration.id %}" class="bid-now-btn">Live Bidding</a>
                         {% else %}
-                            <a href="{% url 'login' %}" class="cart-login-btn">Login to Add to Cart</a>
+                            <a href="{% url 'buy_now' illustration.id %}" class="buy-now-btn">Buy Now</a>
                         {% endif %}
-                        
                     </div>
                 {% endfor %}
             {% else %}

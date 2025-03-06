@@ -37,7 +37,9 @@ from mains.views import (
     illustration_store_view,
     illustration_details_view,
     add_to_cart,view_cart,remove_from_cart,
-    buy_now,checkout_page,order_success
+    buy_now,checkout_page,order_success,
+    place_bid,get_highest_bid,
+    live_bidding_view,start_bidding,bid_confirmation,bidding_history
 )
 
 urlpatterns = [
@@ -67,7 +69,12 @@ urlpatterns = [
     path('buy_now/<int:illustration_id>/', buy_now, name='buy_now'),#for buy illustration
     path('checkout/<int:illustration_id>/', checkout_page, name='checkout_page'),
     path('order-success/', order_success, name='order_success'),
-
+    path('place-bid/<int:illustration_id>/', place_bid, name='place_bid'),
+    path('highest-bid/<int:illustration_id>/', get_highest_bid, name='get_highest_bid'),
+    path('live-bidding/', live_bidding_view, name='live_bidding'),
+    path('start-bidding/<int:illustration_id>/', start_bidding, name='start_bidding'),
+    path('bid-confirmation/<int:bid_id>/', bid_confirmation, name='bid_confirmation'),
+    path('bidding-history/<int:illustration_id>/', bidding_history, name='bidding_history'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #STATIC_URL,STATIC_ROOT

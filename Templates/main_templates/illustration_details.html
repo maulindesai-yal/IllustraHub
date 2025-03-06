@@ -11,9 +11,75 @@
             <h1>{{ illustration.title }}</h1>
             <p class="description"><strong>Description:</strong> {{ illustration.description }}</p>
             <p class="category"><strong>Category:</strong> {{ illustration.category.name }}</p>
-            <p class="price"><strong>Price:</strong> ${{ illustration.price }}</p>
+            <p class="price"><strong>Starting Price:</strong> ${{ illustration.price }}</p>
             <p class="uploaded-by"><strong>Uploaded By:</strong> {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
             <p class="uploaded-at"><strong>Uploaded At:</strong> {{ illustration.uploaded_at }}</p>
+            
+            {% if user.is_authenticated and user == illustration.uploaded_by and not illustration.is_bidding_enabled %}
+                <form method="POST" action="{% url 'start_bidding' illustration.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="start-bidding-btn">Start Live Bidding</button>
+                </form>
+            {% endif %}
+
+            {% if illustration.is_bidding_enabled %}
+                <h3>Live Bidding</h3>
+                <p>Current Highest Bid: <strong>${{ highest_bid.amount|default:illustration.price }}</strong> 
+                    {% if highest_bid.user %}
+                        by {{ highest_bid.user.first_name }} {{ highest_bid.user.last_name }}
+                    {% endif %}
+                </p>
+
+                <p><strong>Bidding Ends In:</strong> <span id="bidding-timer"></span></p>
+
+                {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'place_bid' illustration.id %}">
+                        {% csrf_token %}
+                        <input type="number" name="bid_amount" step="0.1" min="{{ highest_bid.amount|default:illustration.price }}" required>
+                        <button type="submit">Place Bid</button>
+                    </form>
+                    <a href="{% url 'bidding_history' illustration.id %}" class="history-btn">View Bidding History</a>
+                {% else %}
+                    <p><a href="{% url 'login' %}">Login</a> to place a bid.</p>
+                {% endif %}
+
+                {% if user.is_authenticated and user == illustration.uploaded_by %}
+                    <form method="POST" action="{% url 'end_bidding' illustration.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="end-bidding-btn">End Bidding</button>
+                    </form>
+                {% endif %}
+
+            {% endif %}
         </div>
     </div>
+
+    <script>
+        function updateHighestBid() {
+            fetch("{% url 'get_highest_bid' illustration.id %}")  // Call Django view
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('highest-bid').innerText = "$" + data;
+                });
+        }
+    
+        setInterval(updateHighestBid, 5000);  // Refresh bid every 5 seconds
+
+        function updateBiddingTimer() {
+            let endTime = new Date("{{ illustration.bidding_end_time|date:'Y-m-d H:i:s' }}").getTime();
+            let x = setInterval(function() {
+                let now = new Date().getTime();
+                let distance = endTime - now;
+                let hours = Math.floor(distance / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("bidding-timer").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById("bidding-timer").innerHTML = "Bidding Ended";
+                }
+            }, 1000);
+        }
+        updateBiddingTimer();
+    </script>
 {% endblock %}

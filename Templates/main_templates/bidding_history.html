@@ -1,0 +1,16 @@
+{% extends 'main_templates/main_base.html' %}
+
+{% block title %}Bidding History{% endblock %}
+
+{% block content %}
+    <h1>Bidding History for {{ illustration.title }}</h1>
+    <ul>
+        {% for bid in bids %}
+            <li>{{ bid.user.first_name }} - ${{ bid.amount }} - {{ bid.timestamp }}</li>
+        {% empty %}
+            <p>No bids yet.</p>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'illustration_details' illustration.id %}" class="back-to-bidding-btn">Back to Bidding</a>
+{% endblock %}
