@@ -55,14 +55,6 @@
     </div>
 
     <script>
-        function updateHighestBid() {
-            fetch("{% url 'get_highest_bid' illustration.id %}")  // Call Django view
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('highest-bid').innerText = "$" + data;
-                });
-        }
-    
         setInterval(updateHighestBid, 5000);  // Refresh bid every 5 seconds
 
         function updateBiddingTimer() {

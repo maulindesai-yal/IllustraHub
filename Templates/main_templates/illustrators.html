@@ -3,6 +3,7 @@
 {% block title %}Illustartors{% endblock %}
 
 {% block content %}
+    <h1>Illustrators</h1>
     <section class=" filters">
         <form method="get" action="{% url 'illustrators' %}">
             <label for= "sort">Sort By:</lable>
@@ -33,8 +34,8 @@
                             <img src="{{ first_image.image.url }}" alt="{{ illustrator.get_full_name.title }}">
                         {% endif %}
                     {% endwith %}
-                    <h3>{{ illustrator.get_full_name.title }}</h3>
                 </a>
+                <h3>{{ illustrator.get_full_name.title }}</h3>
             </div>
         {% empty %}
             <p>No illustrators found matching your criteria.</p>

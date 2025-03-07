@@ -1,3 +1,32 @@
+document.addEventListener("DOMContentLoaded", function () {
+    let slides = document.querySelectorAll(".slide");
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.remove("active");
+            if (i === index) {
+                slide.classList.add("active");
+            }
+        });
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % slides.length;
+        showSlide(currentIndex);
+    }
+
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        showSlide(currentIndex);
+    }
+
+    document.querySelector(".next").addEventListener("click", nextSlide);
+    document.querySelector(".prev").addEventListener("click", prevSlide);
+
+    setInterval(nextSlide, 4000); // Auto-slide every 4 seconds
+});
+
 // Dynamic Header
 window.addEventListener('scroll', () => {
     const header = document.querySelector('header');
@@ -33,43 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
-// Image Preview with Validation
-// document.getElementById('image').addEventListener('change', function(e) {
-//     const file = e.target.files[0];
-//     const preview = document.getElementById('imagePreview');
-//     preview.innerHTML = '';
-
-//     if (file) {
-//         const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-//         const maxSize = 5 * 1024 * 1024;
-
-//         if (!validTypes.includes(file.type)) {
-//             showError('image', 'Invalid file format. Allowed: JPEG, PNG, GIF');
-//             return;
-//         }
-
-//         if (file.size > maxSize) {
-//             showError('image', 'File size exceeds 5MB limit');
-//             return;
-//         }
-
-//         preview.classList.add('has-image');
-
-//         const reader = new FileReader();
-//         reader.onload = (e) => {
-//             const img = document.createElement('img');
-//             img.src = e.target.result;
-//             img.classList.add('hover-float');
-//             img.style.borderRadius = '8px';
-//             img.style.boxShadow = '0 4px 15px rgba(15,23,42,0.1)';
-//             preview.appendChild(img);
-//         };
-//         reader.readAsDataURL(file);
-//     } else {
-//         preview.classList.remove('has-image');
-//     }
-// });
 
 // Advanced Form Validation
 document.querySelector('form').addEventListener('submit', function(e) {

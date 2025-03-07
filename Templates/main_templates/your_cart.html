@@ -3,31 +3,37 @@
 {% block title %}Your Cart{% endblock %}
 
 {% block content %}
-    <h1>Your Cart</h1>
-    {% if cart_items %}
-        <table>
-            <tr>
-                <th>Illustration</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Action</th>
-            </tr>
-            {% for item in cart_items %}
+    <div class="cart-container"></div>
+        <h1>Your Cart</h1>
+        {% if cart_items %}
+            <table class="cart-table">
                 <tr>
-                    <td>{{ item.illustration.title }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>${{ item.get_total_price }}</td>
-                    <td>
-                        <form action="{% url 'remove_from_cart' item.id %}" method="POST">
-                            {% csrf_token %}
-                            <button type="submit">Remove</button>
-                        </form>
-                    </td>
+                    <th>Illustration</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Action</th>
                 </tr>
-            {% endfor %}
-        </table>
-        <h3>Total Price: ${{ total_price }}</h3>
-    {% else %}
-        <p>Your cart is empty.</p>
-    {% endif %}
+                {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.illustration.title }}</td>
+                        <td>
+                            <img src="{{ item.illustration.image.url }}" alt="{{ item.illustration.title }}">
+                        </td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.get_total_price }}</td>
+                        <td>
+                            <form action="{% url 'remove_from_cart' item.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="remove-btn">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <h3 class="total-price">Total Price: ${{ total_price }}</h3>
+        {% else %}
+            <p class="empty-cart">Your cart is empty.</p>
+        {% endif %}
+    </div>
 {% endblock %}

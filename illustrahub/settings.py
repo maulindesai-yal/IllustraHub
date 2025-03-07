@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authenticate',
     'mains',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -54,6 +55,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware', #this line for security middleware
 ]
+
+ASGI_APPLICATION = 'illustrahub.asgi.application'
+
 #this lines for security middleware
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True

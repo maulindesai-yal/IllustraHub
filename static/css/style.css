@@ -165,6 +165,11 @@ header {
     position: relative;
     z-index: 1;
 }
+.hero-section p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
 
 
 /* Sidebar Overlay */
@@ -271,7 +276,8 @@ header {
 
 /* Slider Container */
 .slider-container {
-    max-width: 10   00px;
+    position: relative;
+    max-width: 900px;
     margin: 2rem auto;
     overflow: hidden;
     border-radius: 12px;
@@ -285,6 +291,8 @@ header {
     width: 300%; /* 3 images */
 }
 
+
+
 .slider img {
     width: 100%;
     height: auto;
@@ -296,6 +304,33 @@ header {
 /* Active Slide */
 .slider img.active {
     display: block;
+}
+
+/* Navigation Buttons */
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 2rem;
+    padding: 0.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+}
+
+.prev:hover, .next:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
 }
 
 .illustration-collection {
@@ -323,44 +358,110 @@ header {
     background: var(--primary-accent);
 }
 
+/* Live Bidding Button */
+.live-bid-btn {
+    display: inline-block;
+    background: var(--button-gradient);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.1);
+}
+
+.live-bid-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+/* Buy Now & Live Bidding Buttons inside Illustration Cards */
+.buy-now-btn,
+.bid-now-btn {
+    display: block;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    margin-top: 1rem;
+}
+
+/* Buy Now Button */
+.buy-now-btn {
+    background: var(--positive-action);
+    color: white;
+}
+
+.buy-now-btn:hover {
+    background: #059669;
+    transform: scale(1.05);
+}
+
+/* Live Bidding Button */
+.bid-now-btn {
+    background: var(--alert-color);
+    color: white;
+}
+
+.bid-now-btn:hover {
+    background: #DC2626;
+    transform: scale(1.05);
+}
+
+/* Centered Live Bidding Section */
+.bidding-section {
+    text-align: center;
+    margin: 2rem 0;
+}
 
 
-.illustrators-list {
+/* live bids */
+.live-bidding-container {
     max-width: 1200px;
-    margin: 4rem auto;
+    margin: 3rem auto;
     padding: 2rem;
     background: var(--surface-color);
     border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(15,23,42,0.1);
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.1);
     text-align: center;
 }
 
-.illustrators-list h1 {
+.live-bidding-container h1 {
     font-size: 2.5rem;
-    color: var(--primary-dark);
     margin-bottom: 2rem;
-    text-align: center;
-    position: relative;
-    padding-bottom: 1rem;
+    color: var(--primary-dark);
 }
 
-.illustrators-list h1::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: var(--primary-accent);
+.uploaded-by {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--secondary-accent);
 }
+
+.category {
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.no-auctions {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-top: 2rem;
+}
+
 
 /* Cards Grid */
 
 .illustration-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
     margin-top: 2rem;
     padding: 3rem 2rem;
     max-width: 1200px;
@@ -389,20 +490,53 @@ header {
     border-radius: 2px;
 }
 
+
+.illustrators-list {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.illustrators-list h1 {
+    font-size: 2.5rem;
+    color: var(--primary-dark);
+    margin-bottom: 3rem;
+    text-align: left;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.illustrators-list h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-accent);
+}
+
+
 .illustrators-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
     margin-top: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
 }
 
 .illustrator-card {
     background: var(--surface-color);
     border-radius: 12px;
     overflow: hidden;
-    padding: 1.5rem;
     box-shadow: 0 4px 24px rgba(15,23,42,0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
     border: 1px solid #E2E8F0;
     text-align: center;
 }
@@ -413,18 +547,20 @@ header {
 }
 
 .illustrator-card h3 {
+    padding: 1rem;
+    text-align: center;
+    color: var(--text-primary);
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--primary-dark);
-    margin: 1rem 0;
+    margin: 0;
 }
 
 .illustrator-card img {
     width: 100%;
-    height: 200px;
+    height: 250px;
     object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 1rem;
+    display: block;
+    transition: transform 0.3s ease;
 }
 
 .illustrator-name {
@@ -436,6 +572,46 @@ header {
     border-top: 1px solid #f1f5f9;
 }
 
+.filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--surface-color);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.1);
+    margin: 2rem auto;
+    max-width: 800px;
+    flex-wrap: wrap;
+}
+
+.filters label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.filters select {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--secondary-accent);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--surface-color);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.filters select:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+    outline: none;
+}
+
+.filters select:hover {
+    background: var(--background-light);
+}
 /* Back to Categories Link */
 .back-link {
     margin-top: 2rem;
@@ -463,7 +639,10 @@ header {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(15,23,42,0.1);
-    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
     border: 1px solid #E2E8F0;
     text-align: center;
     position: relative;
@@ -471,7 +650,7 @@ header {
 
 .illustration-card img {
     width: 100%;
-    height: auto; /* Fixed height for consistency */
+    height: 250px; /* Fixed height for consistency */
     object-fit: cover; /* Crop to fill container */
     display: block;
     transition: transform 0.3s ease;
@@ -560,12 +739,13 @@ header {
 .illustration-image img {
     width: 100%;
     max-width: 500px;
+    object-fit: cover;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(15,23,42,0.15);
 }
 
 .illustration-info {
-    max-width: 600px;
+    max-width: left;
 }
 
 .illustration-info h1 {
@@ -581,10 +761,275 @@ header {
 }
 
 .price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--positive-action);
+}
+
+/* your page styling */
+.cart-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.1);
+    text-align: center;
+}
+
+.cart-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #E2E8F0;
+    text-align: center;
+}
+
+.cart-table th {
+    background: var(--primary-dark);
+    color: var(--surface-color);
+}
+
+.cart-table img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.total-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--positive-action);
+    margin-top: 1rem;
+}
+
+.remove-btn {
+    background: var(--alert-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+    background: #d32f2f;
+}
+
+
+.empty-cart {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-top: 2rem;
+}
+
+/* Bidding Page Styles */
+.bidding-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.1);
+    text-align: center;
+}
+
+.bidding-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-dark);
+}
+
+.bidding-container img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 1rem 0;
+}
+
+.bidding-container p {
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.bidding-container hr {
+    margin: 2rem 0;
+    border: 1px solid var(--text-secondary);
+}
+
+
+/* Live Bidding Info */
+#highest-bid {
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--positive-action);
 }
+
+#bid-count {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--secondary-accent);
+}
+
+/* Bid History */
+#bid-history {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background: var(--background-light);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+#bid-history li {
+    padding: 0.75rem;
+    border-bottom: 1px solid #E2E8F0;
+    font-size: 1rem;
+}
+
+#bid-history li:last-child {
+    border-bottom: none;
+}
+
+/* Bid Form */
+#bid-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#bid-form input {
+    width: 80%;
+    padding: 0.75rem;
+    border: 2px solid var(--secondary-accent);
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+#bid-form input:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+    outline: none;
+}
+
+#bid-form button {
+    background: var(--button-gradient);
+    color: var(--surface-color);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#bid-form button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+/* Form Styling */
+.checkout-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.checkout-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.1);
+    text-align: left;
+}
+
+.checkout-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+}
+
+/* Illustration Summary */
+.illustration-summary {
+    background: var(--background-light);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.illustration-summary img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.illustration-summary h2 {
+    font-size: 1.8rem;
+    margin-top: 1rem;
+    color: var(--primary-dark);
+}
+
+.illustration-summary p {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+/* Form Styling */
+.checkout-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Checkout Button */
+.checkout-btn {
+    background: var(--button-gradient);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.checkout-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+
 
 /* Contact Page Styling */
 .contact-section {
@@ -862,6 +1307,28 @@ button[type="submit"]:hover {
         height: 200px; /* Adjust height for smaller screens */
     }
 
+    .bidding-container {
+        padding: 1.5rem;
+    }
+
+    .bidding-container h1 {
+        font-size: 2rem;
+    }
+
+    #bid-form input {
+        width: 100%;
+    }
+    .checkout-container {
+        padding: 1.5rem;
+    }
+
+    .checkout-container h1 {
+        font-size: 2rem;
+    }
+
+    .illustration-summary img {
+        max-width: 200px;
+    }
     .illustrators-list {
         padding: 1.5rem;
     }
@@ -873,6 +1340,11 @@ button[type="submit"]:hover {
 
     .illustrator-card img {
         height: 180px;
+    }
+
+    .filters {
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .illustration-collection{

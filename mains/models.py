@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.utils.timezone import now
+from django.utils.timezone import now,timedelta
 
 # Create your models here.
 class Category(models.Model):
@@ -29,9 +29,24 @@ class Illustration(models.Model):
     )
     selling_type = models.CharField(max_length=10, choices=SELLING_TYPE_CHOICES, default='sell')
     bidding_end_time = models.DateTimeField(null=True, blank=True)  # When bidding ends
-
-    def __str__(self):
-        return self.title
+    is_bidding_active = models.BooleanField(default=False)
+    sold_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='purchased_illustrations')
+    final_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
+    
+    def start_bidding(self):
+        self.is_bidding_active = True
+        self.bidding_end_time = now() + timedelta(hours=1)
+        self.save()
+    
+    def end_bidding(self):
+        self.is_bidding_active = False
+        self.save()
+    
+    def mark_as_sold(self, user, price):
+        self.sold_to = user
+        self.final_price = price
+        self.end_bidding()
     
 class Bid(models.Model):
     illustration = models.ForeignKey(Illustration, on_delete=models.CASCADE, related_name="bids")

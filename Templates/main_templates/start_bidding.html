@@ -1,0 +1,46 @@
+{% extends 'main_templates/main_base.html' %}
+
+{% block title %}Start Bidding{% endblock %}
+
+{% block content %}
+    <div class="start-bidding-container">
+        <h1>Start Live Bidding</h1>
+        
+        <div class="illustration-preview">
+            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+            <h2>{{ illustration.title }}</h2>
+            <p class="description">{{ illustration.description }}</p>
+            <p class="starting-price"><strong>Starting Price:</strong> ${{ illustration.price }}</p>
+        </div>
+        
+        <form method="POST" action="{% url 'start_bidding' illustration.id %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="duration">Auction Duration:</label>
+                <select id="duration" name="duration" required>
+                    <option value="24" selected>24 Hours</option>
+                    <option value="48">2 Days</option>
+                    <option value="72">3 Days</option>
+                    <option value="168">7 Days</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="reserve_price">Reserve Price (Optional):</label>
+                <input type="number" id="reserve_price" name="reserve_price" step="0.01" min="{{ illustration.price }}" placeholder="Minimum acceptable price">
+                <p class="help-text">Item won't sell if bidding doesn't reach this amount</p>
+            </div>
+            
+            <div class="form-group checkbox">
+                <input type="checkbox" id="auto_extend" name="auto_extend" checked>
+                <label for="auto_extend">Auto-extend auction by 5 minutes if bid is placed in the last 5 minutes</label>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{% url 'illustration_details' illustration.id %}" class="cancel-btn">Cancel</a>
+                <button type="submit" class="start-bidding-btn">Start Auction</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -3,55 +3,22 @@
 {% block title %}Live Bidding{% endblock %}
 
 {% block content %}
-    <h1>Live Bidding</h1>
-
-    <div class="illustration-grid">
-        {% if illustrations %}
-            {% for illustration in illustrations %}
-                <div class="illustration-card">
-                    <a href="{% url 'illustration_details' illustration.id %}">
-                        <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
-                    </a>
-                    <h3>{{ illustration.title }}</h3>
-                    <p class="price"><strong>Starting Price:</strong> ${{ illustration.price }}</p>
-                    <p><strong>Current Highest Bid:</strong> <span id="highest-bid-{{ illustration.id }}">${{ illustration.price }}</span></p>
-                    <p><strong>Bidding Ends In:</strong> <span id="bidding-timer-{{ illustration.id }}"></span></p>
-
-                    <a href="{% url 'illustration_details' illustration.id %}" class="bid-now-btn">Place a Bid</a>
+    <div class="live-bidding-container">
+        <h1>Live Bidding</h1>
+        {% for illustration in illustrations %}
+            <a href="{% url 'illustration_bidding' illustration.id %}">
+                <div class = "illustration-image">
+                    <img src="{{ illustration.image }}" alt="{{ illustration.title }}" width="200">
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>No live bidding events at the moment.</p>
-        {% endif %}
+            </a>
+            <div class="illustration-info">
+                <h1>{{ illustration.title }}</h1>
+                <p class="category"><strong>Category:</strong> {{ illustration.category.name }}</p>
+                <p class="price"><strong>Starting Price:</strong> ${{ illustration.price }}</p>
+                <p class="uploaded-by"><strong>Uploaded By:</strong> {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
+            </div>
+        {% empty %}
+            <p>No live auctions available.</p>
+        {% endfor %}
     </div>
-
-    <script>
-        function updateBids() {
-            let illustrations = document.querySelectorAll('.illustration-card');
-            illustrations.forEach(card => {
-                let illustrationId = card.querySelector('.bid-now-btn').getAttribute('href').split('/').slice(-2, -1)[0];
-
-                fetch(`/highest-bid/${illustrationId}/`)  
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById(`highest-bid-${illustrationId}`).innerText = "$" + data;
-                    });
-
-                let endTime = new Date("{{ illustration.bidding_end_time|date:'Y-m-d H:i:s' }}").getTime();
-                let x = setInterval(function() {
-                    let now = new Date().getTime();
-                    let distance = endTime - now;
-                    let hours = Math.floor(distance / (1000 * 60 * 60));
-                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    document.getElementById(`bidding-timer-${illustrationId}`).innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
-                    if (distance < 0) {
-                        clearInterval(x);
-                        document.getElementById(`bidding-timer-${illustrationId}`).innerHTML = "Bidding Ended";
-                    }
-                }, 1000);
-            });
-        }
-        setInterval(updateBids, 5000);
-    </script>
 {% endblock %}

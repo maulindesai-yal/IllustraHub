@@ -1,0 +1,72 @@
+{% extends 'main_templates/main_base.html' %}
+
+{% block title %}Bidding for {{ illustration.title }}{% endblock %}
+
+{% block content %}
+    <div class="bidding-container">
+        <h1>{{ illustration.title }}</h1>
+        <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}" width="400">
+        <p><strong>Category:</strong> {{ illustration.category.name }}</p>
+        <p><strong>Starting Price:</strong> ${{ illustration.price }}</p>
+        <p><strong>Uploaded By:</strong> {{ illustration.uploaded_by.get_full_name }}</p>
+        
+        <hr>
+        <h2>Live Bidding</h2>
+        <p><strong>Current Highest Bid:</strong> <span id="highest-bid">${{ highest_bid.amount|default:illustration.price }}</span></p>
+        <p><strong>Number of Bids Placed:</strong> <span id="bid-count">{{ bid_count }}</span></p>
+        
+        <h3>Bid History</h3>
+        <ul id="bid-history">
+            {% for bid in bids %}
+                <li>{{ bid.user.get_full_name }} placed a bid of ${{ bid.amount }} at {{ bid.timestamp }}</li>
+            {% empty %}
+                <li>No bids placed yet.</li>
+            {% endfor %}
+        </ul>
+
+        {% if request.user.is_authenticated %}
+            <h3>Place Your Bid</h3>
+            <form id="bid-form">
+                <input type="number" id="bid-amount" name="bid_amount" step="0.01" min="{{ highest_bid.amount|default:illustration.price }}" required>
+                <button type="submit">Place Bid</button>
+            </form>
+        {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to place a bid.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        const illustrationId = "{{ illustration.id }}";
+        const socket = new WebSocket("ws://" + window.location.host + "/ws/bid/" + illustrationId + "/");
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            document.getElementById("highest-bid").innerText = `$${data.bid_amount}`;
+            document.getElementById("bid-count").innerText = data.bid_count;
+            const history = document.getElementById("bid-history");
+            const newBid = document.createElement("li");
+            newBid.innerText = `${data.bidder} placed a bid of $${data.bid_amount} at ${data.timestamp}`;
+            history.prepend(newBid);
+        };
+
+        document.getElementById("bid-form").onsubmit = function(event) {
+            event.preventDefault();
+            const bidAmount = document.getElementById("bid-amount").value;
+            fetch("{% url 'place_bid' illustration.id %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ bid_amount: bidAmount })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      document.getElementById("bid-amount").value = "";
+                  } else {
+                      alert(data.error);
+                  }
+              });
+        };
+    </script>
+{% endblock %}
