@@ -129,6 +129,43 @@ def my_artworks_view(request):
         'user_artworks': user_artworks
     })
 
+@login_required
+def edit_artwork(request, artwork_id):
+    artwork = get_object_or_404(Illustration, id=artwork_id, uploaded_by=request.user)
+    categories = Category.objects.all()
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        category_id = request.POST.get('category')
+        price = request.POST.get('price')
+        selling_type = request.POST.get('selling_type')
+        image = request.FILES.get('image')
+
+        try:
+            category = get_object_or_404(Category, id=category_id)
+            
+            artwork.title = title
+            artwork.description = description
+            artwork.category = category
+            artwork.price = price if price else None
+            artwork.selling_type = selling_type
+            
+            if image:
+                artwork.image = image
+            
+            artwork.save()
+            messages.success(request, 'Artwork updated successfully!')
+            return redirect('my_artworks')
+            
+        except Exception as e:
+            messages.error(request, f'Error updating artwork: {str(e)}')
+
+    return render(request, 'main_templates/edit_artwork.html', {
+        'artwork': artwork,
+        'categories': categories
+    })
+
 def illustrators_view(request):
     illustrators = CustomUser.objects.filter(
         user_type='illustrator'
@@ -385,3 +422,16 @@ def remove_from_cart(request, cart_item_id):
     cart_item.delete()
     messages.success(request, "Item removed from cart.")
     return redirect('view_cart')
+
+@login_required
+def delete_artwork(request, artwork_id):
+    artwork = get_object_or_404(Illustration, id=artwork_id, uploaded_by=request.user)
+    
+    if request.method == 'POST':
+        artwork.delete()
+        messages.success(request, 'Artwork deleted successfully!')
+        return redirect('my_artworks')
+    
+    return render(request, 'main_templates/delete_artwork.html', {
+        'artwork': artwork
+    })

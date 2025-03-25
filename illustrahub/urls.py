@@ -40,7 +40,8 @@ from mains.views import (
     buy_now,checkout_page,order_success,
     illustration_bidding_view,
     place_bid,
-    live_bidding_view,start_bidding,bidding_history
+    live_bidding_view,start_bidding,bidding_history,
+    edit_artwork,delete_artwork
 )
 
 urlpatterns = [
@@ -58,6 +59,8 @@ urlpatterns = [
     path('category/<int:category_id>/illustrators/', category_collection_view, name='category_collection'),
     path('category/<int:category_id>/illustrator/<str:illustrator_email>/', illustrator_category_collection_view, name='illustrator_category_collection'),
     path('my artworks/',my_artworks_view,name='my_artworks'),
+    path('edit-artwork/<int:artwork_id>/', edit_artwork, name='edit_artwork'),
+    path('delete-artwork/<int:artwork_id>/', delete_artwork, name='delete_artwork'),
     path('illustrators',illustrators_view,name='illustrators'),
     path('about us/',about_us_view,name='about_us'),
     path('contact us/',contact_us_view,name='contact_us'),
@@ -68,6 +71,7 @@ urlpatterns = [
     path('your_cart/', view_cart, name='view_cart'),
     path('remove-from-cart/<int:cart_item_id>/', remove_from_cart, name='remove_from_cart'),
     path('buy_now/<int:illustration_id>/', buy_now, name='buy_now'),#for buy illustration
+    path('checkout/', checkout_page, name='checkout'),
     path('checkout/<int:illustration_id>/', checkout_page, name='checkout_page'),
     path('order-success/', order_success, name='order_success'),
     path('place-bid/<int:illustration_id>/', place_bid, name='place_bid'),

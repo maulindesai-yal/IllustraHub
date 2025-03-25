@@ -1,29 +1,65 @@
 {% extends 'main_templates/main_base.html' %}
-{% block title %}Collection{% endblock %}
-{% block content %}
-    <div class="illustration-collection">
-        <h1>Illustration Collection</h1>
-        <h2 class="section-title">Categories</h2>
-        <div class="illustration-grid">
-            {% if category_illustrations %}
-                {% for item in category_illustrations %}
-                    <div class="illustration-card">
-                        <a href="{% if user.is_authenticated %}{% url 'category_collection' item.category.id %}{% else %}{% url 'login' %}{% endif %}">
-                            <div class="category-overlay">
-                                <h3>{{ item.category.name }}</h3>
-                            </div>
-                            <img src="{{ item.illustration.image.url }}" alt="{{ item.illustration.title }}">
-                        </a>
+{% load static %}
 
-                        <div class="illustrator-name">
-                            <p>By: {{ item.illustration.uploaded_by.first_name }} {{ item.illustration.uploaded_by.last_name }}</p>
+{% block title %}Illustration Collection - IllustraHub{% endblock %}
+
+{% block content %}
+<div class="collection-page">
+    <!-- Hero Section -->
+    <section class="collection-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Explore Our Collection</h1>
+                <p>Discover unique illustrations across various categories</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Grid -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Browse by Category</h2>
+                <p>Find the perfect illustration style for your needs</p>
+            </div>
+
+            {% if category_illustrations %}
+                <div class="categories-grid">
+                    {% for item in category_illustrations %}
+                        <div class="category-card">
+                            <a href="{% if user.is_authenticated %}{% url 'category_collection' item.category.id %}{% else %}{% url 'login' %}{% endif %}" class="category-link">
+                                <div class="category-image">
+                                    <img src="{{ item.illustration.image.url }}" alt="{{ item.category.name }}">
+                                    <div class="category-overlay">
+                                        <h3>{{ item.category.name }}</h3>
+                                        <span class="view-category">View Collection</span>
+                                    </div>
+                                </div>
+                                <div class="category-info">
+                                    <div class="category-stats">
+                                        <span class="stat">
+                                            <i class="fas fa-paint-brush"></i>
+                                            {{ item.category.illustrations.count }} Works
+                                        </span>
+                                        <span class="stat">
+                                            <i class="fas fa-user"></i>
+                                            {{ item.category.illustrators.count }} Artists
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             {% else %}
-                <p>No illustrations have been uploaded yet.</p>
+                <div class="no-content">
+                    <i class="fas fa-paint-brush"></i>
+                    <h3>No Categories Yet</h3>
+                    <p>We're working on adding amazing illustration categories.</p>
+                </div>
             {% endif %}
         </div>
-    </div>
+    </section>
+</div>
 {% endblock %}
    

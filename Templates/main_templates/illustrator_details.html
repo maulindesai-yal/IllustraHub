@@ -1,35 +1,144 @@
 {% extends 'main_templates/main_base.html' %}
+{% load static %}
 
-{% block title %}Illustrator Details{% endblock %}
+{% block title %}{{ illustrator.get_full_name.title }} - IllustraHub{% endblock %}
 
 {% block content %}
-    <section class="illustrator-info">
-        <h1>{{ illustrator.get_full_name.title }}</h1>
-        {% if illustrator.country %}
-            <p>Country: {{ illustrator.get_country_display }}</p>
-        {% endif %}
-        {% if illustrator.biography %}
-            <p>{{ illustrator.biography }}</p>
-        {% endif %}
+<div class="illustrator-profile-page">
+    <!-- Profile Header -->
+    <section class="profile-header">
+        <div class="container">
+            <div class="profile-header-content">
+                <div class="profile-image">
+                    {% with first_image=illustrator.mains_illustrations.first %}
+                        {% if first_image %}
+                            <img src="{{ first_image.image.url }}" alt="{{ illustrator.get_full_name.title }}">
+                        {% else %}
+                            <div class="placeholder-image">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="profile-info">
+                    <h1>{{ illustrator.get_full_name.title }}</h1>
+                    {% if illustrator.country %}
+                        <p class="location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ illustrator.get_country_display }}
+                        </p>
+                    {% endif %}
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-paint-brush"></i>
+                            <span>{{ illustrations.count }} Works</span>
+                        </div>
+                        {% if illustrator.rating %}
+                            <div class="stat-item">
+                                <i class="fas fa-star"></i>
+                                <span>{{ illustrator.rating|floatformat:1 }} Rating</span>
+                            </div>
+                        {% endif %}
+                        <div class="stat-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Member since {{ illustrator.date_joined|date:"F Y" }}</span>
+                        </div>
+                    </div>
+                    {% if illustrator.biography %}
+                        <div class="biography">
+                            <h3>About</h3>
+                            <p>{{ illustrator.biography }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section class="illustrations-grid">
-        <h2>Uploaded Illustrations</h2>
-        {% if illustrations %}
-            <div class="grid">
-                {% for illustration in illustrations %}
-                    <div class="illustration-card">
-                        <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
-                        <h3>{{ illustration.title }}</h3>
-                        <p>{{ illustration.description }}</p>
-                        {% if illustration.price %}
-                            <p>Price: ${{ illustration.price }}</p>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+    <!-- Portfolio Section -->
+    <section class="portfolio-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Portfolio</h2>
+                <div class="portfolio-filters">
+                    <button class="filter-btn active" data-filter="all">All Works</button>
+                    <button class="filter-btn" data-filter="digital">Digital Art</button>
+                    <button class="filter-btn" data-filter="traditional">Traditional</button>
+                    <button class="filter-btn" data-filter="vector">Vector Art</button>
+                </div>
             </div>
-        {% else %}
-            <p>No illustrations uploaded yet.</p>
-        {% endif %}
+
+            {% if illustrations %}
+                <div class="portfolio-grid">
+                    {% for illustration in illustrations %}
+                        <div class="portfolio-item" data-category="{{ illustration.category|lower }}">
+                            <div class="portfolio-image">
+                                <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                                <div class="portfolio-overlay">
+                                    <div class="overlay-content">
+                                        <h3>{{ illustration.title }}</h3>
+                                        <p>{{ illustration.description|truncatewords:20 }}</p>
+                                        {% if illustration.price %}
+                                            <span class="price">${{ illustration.price }}</span>
+                                        {% endif %}
+                                        <a href="{% url 'illustration_details' illustration.id %}" class="view-btn">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-works">
+                    <i class="fas fa-paint-brush"></i>
+                    <h3>No Works Yet</h3>
+                    <p>This illustrator hasn't uploaded any works yet.</p>
+                </div>
+            {% endif %}
+        </div>
     </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <h2>Get in Touch</h2>
+                <p>Interested in working with {{ illustrator.get_full_name.title }}? Send them a message!</p>
+                <a href="{% url 'contact_us' %}" class="btn-cta primary">
+                    <i class="fas fa-envelope"></i>
+                    Contact Illustrator
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Portfolio Filter Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+
+            const filterValue = button.getAttribute('data-filter');
+
+            portfolioItems.forEach(item => {
+                if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
 {% endblock %}

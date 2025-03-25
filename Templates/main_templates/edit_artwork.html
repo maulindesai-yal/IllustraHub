@@ -1,0 +1,79 @@
+{% extends 'main_templates/main_base.html' %}
+
+{% block title %}Edit Artwork - IllustraHub{% endblock %}
+
+{% block content %}
+    <!-- Edit Artwork Hero Section -->
+    <section class="edit-artwork-hero">
+        <div class="hero-content">
+            <h1>Edit Artwork</h1>
+            <p>Update your artwork details</p>
+        </div>
+    </section>
+
+    <!-- Edit Artwork Section -->
+    <section class="edit-artwork-section">
+        <div class="edit-form-container">
+            <form method="post" enctype="multipart/form-data" class="edit-form">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" required value="{{ artwork.title }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select a Category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if category.id == artwork.category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price (USD)</label>
+                        <input type="number" id="price" name="price" min="1" step="0.01" value="{{ artwork.price }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selling_type">Selling Type</label>
+                        <select id="selling_type" name="selling_type" required>
+                            <option value="sell" {% if artwork.selling_type == 'sell' %}selected{% endif %}>Fixed Price</option>
+                            <option value="bid" {% if artwork.selling_type == 'bid' %}selected{% endif %}>Live Bidding</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4" required>{{ artwork.description }}</textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="image">Update Image (Optional)</label>
+                        <div class="file-upload">
+                            <input type="file" id="image" name="image" accept="image/*">
+                            <label for="image" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Choose a new image or keep the current one</span>
+                            </label>
+                        </div>
+                        {% if artwork.image %}
+                            <div class="current-image">
+                                <img src="{{ artwork.image.url }}" alt="Current artwork image">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="{% url 'my_artworks' %}" class="cancel-btn">Cancel</a>
+                    <button type="submit" class="submit-btn">Update Artwork</button>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %} 

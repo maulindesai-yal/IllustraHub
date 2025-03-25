@@ -1,27 +1,72 @@
 {% extends 'main_templates/main_base.html' %}
-{% block title %}Illustrators in {{ category.name }}{% endblock %}
-{% block content %}
-    <div class="illustrators-list">
-        <h1>Illustrators in {{ category.name }}</h1>
-        {% if illustrators_with_illustrations %}
-            <div class="illustrator-grid">
-                {% for item in illustrators_with_illustrations %}
-                    <div class="illustrator-card">
-                        <a href="{% url 'illustrator_category_collection' category.id item.illustrator.email %}">
-                            {% if item.illustration %}
-                                <img src="{{ item.illustration.image.url }}" alt="{{ item.illustration.title }}">
-                            {% endif %}
-                        </a>
-                        <h3>{{ item.illustrator.first_name }} {{ item.illustrator.last_name }}</h3>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>No illustrators have uploaded work in this category.</p>
-        {% endif %}
+{% load static %}
 
-        <div class="back-link">
-            <a href="{% url 'collection' %}">Back to Categories</a>
+{% block title %}{{ category.name }} Illustrations - IllustraHub{% endblock %}
+
+{% block content %}
+<div class="category-collection-page">
+    <!-- Category Header -->
+    <section class="category-header">
+        <div class="container">
+            <div class="category-header-content">
+                <div class="breadcrumb">
+                    <a href="{% url 'collection' %}">Categories</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>{{ category.name }}</span>
+                </div>
+                <h1>{{ category.name }} Illustrations</h1>
+                <p class="category-description">Discover talented illustrators specializing in {{ category.name|lower }} art</p>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Illustrators Grid -->
+    <section class="illustrators-section">
+        <div class="container">
+            {% if illustrators_with_illustrations %}
+                <div class="illustrators-grid">
+                    {% for item in illustrators_with_illustrations %}
+                        <div class="illustrator-card">
+                            <a href="{% url 'illustrator_category_collection' category.id item.illustrator.email %}" class="illustrator-link">
+                                <div class="illustrator-image">
+                                    {% if item.illustration %}
+                                        <img src="{{ item.illustration.image.url }}" alt="{{ item.illustrator.get_full_name }}">
+                                    {% else %}
+                                        <div class="placeholder-image">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="illustrator-overlay">
+                                        <span class="view-profile">View Profile</span>
+                                    </div>
+                                </div>
+                                <div class="illustrator-info">
+                                    <h3>{{ item.illustrator.get_full_name }}</h3>
+                                    <div class="illustrator-stats">
+                                        <span class="stat">
+                                            <i class="fas fa-paint-brush"></i>
+                                            {{ item.illustration_count }} Works
+                                        </span>
+                                        {% if item.illustrator.rating %}
+                                            <span class="stat">
+                                                <i class="fas fa-star"></i>
+                                                {{ item.illustrator.rating|floatformat:1 }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-content">
+                    <i class="fas fa-paint-brush"></i>
+                    <h3>No Illustrators Found</h3>
+                    <p>No illustrators have uploaded work in this category yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
 {% endblock %}

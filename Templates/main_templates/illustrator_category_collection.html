@@ -1,37 +1,113 @@
 {% extends 'main_templates/main_base.html' %}
-{% block title %}{{ illustrator.first_name }}'s {{ category.name }} Illustrations{% endblock %}
+{% load static %}
+
+{% block title %}{{ illustrator.get_full_name }}'s {{ category.name }} Collection - IllustraHub{% endblock %}
+
 {% block content %}
-    <div class="illustration-collection">
-        <h1>{{ illustrator.first_name }} {{ illustrator.last_name }}'s {{ category.name }} Illustrations</h1>
-        
-        <div class="illustration-grid">
-            {% if illustrations %}
-                {% for illustration in illustrations %}
-                    <div class="illustration-card">
-                        <a href="{% url 'illustration_details' illustration.id %}">
-                            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
-                        </a>
-                        <h3>{{ illustration.title }}</h3>
-                        <div class="illustrator-info">
-                            <p>Uploaded: {{ illustration.uploaded_at|date:"M d, Y" }}</p>
+<div class="illustrator-category-page">
+    <!-- Category Header -->
+    <section class="category-header">
+        <div class="container">
+            <div class="category-header-content">
+                <div class="breadcrumb">
+                    <a href="{% url 'collection' %}">Categories</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <a href="{% url 'category_collection' category.id %}">{{ category.name }}</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>{{ illustrator.get_full_name }}</span>
+                </div>
+                <div class="header-main">
+                    <div class="illustrator-profile">
+                        {% with first_image=illustrator.mains_illustrations.first %}
+                            <div class="profile-image">
+                                {% if first_image %}
+                                    <img src="{{ first_image.image.url }}" alt="{{ illustrator.get_full_name }}">
+                                {% else %}
+                                    <div class="placeholder-image">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endwith %}
+                        <div class="profile-info">
+                            <h1>{{ illustrator.get_full_name }}'s {{ category.name }} Collection</h1>
+                            <div class="profile-stats">
+                                <span class="stat">
+                                    <i class="fas fa-paint-brush"></i>
+                                    {{ illustrations.count }} Works
+                                </span>
+                                {% if illustrator.rating %}
+                                    <span class="stat">
+                                        <i class="fas fa-star"></i>
+                                        {{ illustrator.rating|floatformat:1 }} Rating
+                                    </span>
+                                {% endif %}
+                            </div>
                         </div>
-                        {% if user.is_authenticated %}
-                            <form action="{% url 'add_to_cart' illustration.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="cart-btn">Add to Cart</button>
-                            </form>
-                        {% else %}
-                            <a href="{% url 'login' %}" class="cart-login-btn">Login to Add to Cart</a>
-                        {% endif %}
                     </div>
-                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Illustrations Grid -->
+    <section class="illustrations-section">
+        <div class="container">
+            {% if illustrations %}
+                <div class="illustrations-grid">
+                    {% for illustration in illustrations %}
+                        <div class="illustration-card">
+                            <div class="illustration-image">
+                                <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                                <div class="illustration-overlay">
+                                    <div class="overlay-content">
+                                        <h3>{{ illustration.title }}</h3>
+                                        <p>{{ illustration.description|truncatewords:20 }}</p>
+                                        {% if illustration.price %}
+                                            <span class="price">${{ illustration.price }}</span>
+                                        {% endif %}
+                                        <div class="overlay-actions">
+                                            <a href="{% url 'illustration_details' illustration.id %}" class="view-btn">
+                                                View Details
+                                            </a>
+                                            {% if user.is_authenticated %}
+                                                <form action="{% url 'add_to_cart' illustration.id %}" method="POST" class="cart-form">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="cart-btn">
+                                                        <i class="fas fa-shopping-cart"></i>
+                                                        Add to Cart
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <a href="{% url 'login' %}" class="cart-btn">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                    Login to Add
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="illustration-info">
+                                <h3>{{ illustration.title }}</h3>
+                                <div class="illustration-meta">
+                                    <span class="upload-date">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        {{ illustration.uploaded_at|date:"M d, Y" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             {% else %}
-                <p>No illustrations in this category by this illustrator.</p>
+                <div class="no-content">
+                    <i class="fas fa-paint-brush"></i>
+                    <h3>No Illustrations Found</h3>
+                    <p>{{ illustrator.get_full_name }} hasn't uploaded any {{ category.name|lower }} illustrations yet.</p>
+                </div>
             {% endif %}
         </div>
-        
-        <div class="back-link">
-            <a href="{% url 'category_collection' category.id %}">Back to Illustrators</a>
-        </div>
-    </div>
+    </section>
+</div>
 {% endblock %}

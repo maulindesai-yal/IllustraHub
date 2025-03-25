@@ -1,44 +1,144 @@
 {% extends 'main_templates/main_base.html' %}
+{% load static %}
 
-{% block title %}Illustartors{% endblock %}
+{% block title %}Illustrators - IllustraHub{% endblock %}
 
 {% block content %}
-    <h1>Illustrators</h1>
-    <section class=" filters">
-        <form method="get" action="{% url 'illustrators' %}">
-            <label for= "sort">Sort By:</lable>
-            <select name="sort" onchange="this.form.submit()">
-                <option value="name_asc" {% if current_sort == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
-                <option value="name_desc" {% if current_sort == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
-            </select>
+<div class="illustrators-page">
+    <!-- Hero Section -->
+    <section class="illustrators-hero">
+        <div class="illustrators-hero-content">
+            <h1>Discover Talented Illustrators</h1>
+            <p class="hero-subtitle">Explore our diverse community of creative artists from around the world</p>
+        </div>
+    </section>
 
-            <label for="country">Filter by Country:</label>
-            <select name="country" onchange="this.form.submit()">
-                <option value="">All Countries</option>
-                {% for code,name in country_choices %}
-                    {% if code != '' %}
-                    <option value="{{ code }}" {% if current_country == code %}selected{% endif %}>
-                        {{ name }}
-                    </option>
-                    {% endif %}
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <div class="container">
+            <form method="get" action="{% url 'illustrators' %}" class="filters-form">
+                <div class="filter-group">
+                    <label for="sort">Sort By:</label>
+                    <select name="sort" id="sort" onchange="this.form.submit()">
+                        <option value="name_asc" {% if current_sort == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                        <option value="name_desc" {% if current_sort == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
+                        <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Most Popular</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="country">Country:</label>
+                    <select name="country" id="country" onchange="this.form.submit()">
+                        <option value="">All Countries</option>
+                        {% for code,name in country_choices %}
+                            {% if code != '' %}
+                            <option value="{{ code }}" {% if current_country == code %}selected{% endif %}>
+                                {{ name }}
+                            </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="style">Art Style:</label>
+                    <select name="style" id="style" onchange="this.form.submit()">
+                        <option value="">All Styles</option>
+                        <option value="digital" {% if current_style == 'digital' %}selected{% endif %}>Digital Art</option>
+                        <option value="traditional" {% if current_style == 'traditional' %}selected{% endif %}>Traditional</option>
+                        <option value="vector" {% if current_style == 'vector' %}selected{% endif %}>Vector Art</option>
+                        <option value="watercolor" {% if current_style == 'watercolor' %}selected{% endif %}>Watercolor</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-filter"></i>
+                    Apply Filters
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Illustrators Grid -->
+    <section class="illustrators-grid-section">
+        <div class="container">
+            <div class="illustrators-grid">
+                {% for illustrator in illustrators %}
+                    <div class="illustrator-card">
+                        <div class="illustrator-image">
+                            <a href="{% url 'illustrator_details' email=illustrator.email %}">
+                                {% with first_image=illustrator.mains_illustrations.first %}
+                                    {% if first_image %}
+                                        <img src="{{ first_image.image.url }}" alt="{{ illustrator.get_full_name.title }}">
+                                        <div class="image-overlay">
+                                            <span class="view-profile">View Profile</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="placeholder-image">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+                            </a>
+                        </div>
+                        <div class="illustrator-info">
+                            <h3>{{ illustrator.get_full_name.title }}</h3>
+                            {% if illustrator.country %}
+                                <p class="country">
+                                    <i class="fas fa-globe"></i>
+                                    {{ illustrator.get_country_display }}
+                                </p>
+                            {% endif %}
+                            <div class="illustrator-stats">
+                                <span class="stat">
+                                    <i class="fas fa-paint-brush"></i>
+                                    {{ illustrator.mains_illustrations.count }} Works
+                                </span>
+                                {% if illustrator.rating %}
+                                    <span class="stat">
+                                        <i class="fas fa-star"></i>
+                                        {{ illustrator.rating|floatformat:1 }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>No Illustrators Found</h3>
+                        <p>Try adjusting your filters to find what you're looking for.</p>
+                        <a href="{% url 'illustrators' %}" class="btn-cta primary">Clear Filters</a>
+                    </div>
                 {% endfor %}
-            </select>
-        </form>
-    </section>
-    <section class="illustrators-grid">
-        {% for illustrator in illustrators %}
-            <div class="illustrator-card">
-                <a href="{% url 'illustrator_details' email=illustrator.email %}">
-                    {% with first_image=illustrator.mains_illustrations.first %}
-                        {% if first_image %}
-                            <img src="{{ first_image.image.url }}" alt="{{ illustrator.get_full_name.title }}">
-                        {% endif %}
-                    {% endwith %}
-                </a>
-                <h3>{{ illustrator.get_full_name.title }}</h3>
             </div>
-        {% empty %}
-            <p>No illustrators found matching your criteria.</p>
-        {% endfor %}
+
+            <!-- Pagination -->
+            {% if illustrators.has_other_pages %}
+                <div class="pagination">
+                    {% if illustrators.has_previous %}
+                        <a href="?page={{ illustrators.previous_page_number }}" class="page-link">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    {% endif %}
+                    
+                    {% for num in illustrators.paginator.page_range %}
+                        {% if illustrators.number == num %}
+                            <span class="page-link active">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if illustrators.has_next %}
+                        <a href="?page={{ illustrators.next_page_number }}" class="page-link">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
     </section>
+</div>
 {% endblock %}

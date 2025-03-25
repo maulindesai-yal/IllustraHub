@@ -1,37 +1,140 @@
 {% extends 'main_templates/main_base.html' %}
 
-{% block title %}Illustration Store{% endblock %}
+{% block title %}Illustration Store - IllustraHub{% endblock %}
 
 {% block content %}
-    <div class="illustration-Store">
-        <h1>Illustration Store</h1>
-
-        <div class="bidding-section">
-            <a href="{% url 'live_bidding' %}" class="live-bid-btn">Join Live Bidding</a>
+    <!-- Store Hero Section -->
+    <section class="store-hero">
+        <div class="hero-content">
+            <h1>Illustration Store</h1>
+            <p>Discover unique artworks from talented artists worldwide</p>
         </div>
+    </section>
 
-        <div class="illustration-grid">
-            {% if illustrations %}
-                {% for illustration in illustrations %}
-                    <div class="illustration-card">
-                        <a href="{% url 'illustration_details' illustration.id %}">
-                            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
-                        </a>
-                        <h3>{{ illustration.title }}</h3>
-                        
-                        <p class="price"><strong>Price:</strong> ${{ illustration.price }}</p>
-                        <p class="illustrator-name">By: {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
-                        
-                        {% if illustration.selling_type == "bid" %}
-                            <a href="{% url 'illustration_details' illustration.id %}" class="bid-now-btn">Live Bidding</a>
-                        {% else %}
-                            <a href="{% url 'buy_now' illustration.id %}" class="buy-now-btn">Buy Now</a>
-                        {% endif %}
+    <!-- Store Section -->
+    <section class="store-section">
+        <div class="container">
+            <!-- Filters -->
+            <div class="store-filters">
+                <div class="filter-group">
+                    <label for="category">Category</label>
+                    <select id="category" class="filter-select">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="price_range">Price Range</label>
+                    <select id="price_range" class="filter-select">
+                        <option value="">All Prices</option>
+                        <option value="0-50">Under $50</option>
+                        <option value="50-100">$50 - $100</option>
+                        <option value="100-200">$100 - $200</option>
+                        <option value="200+">Over $200</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="sort_by">Sort By</label>
+                    <select id="sort_by" class="filter-select">
+                        <option value="newest">Newest First</option>
+                        <option value="price_low">Price: Low to High</option>
+                        <option value="price_high">Price: High to Low</option>
+                        <option value="popular">Most Popular</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="selling_type">Selling Type</label>
+                    <select id="selling_type" class="filter-select">
+                        <option value="">All Types</option>
+                        <option value="sell">Fixed Price</option>
+                        <option value="bid">Live Bidding</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Live Bidding Banner -->
+            <div class="live-bidding-banner">
+                <div class="banner-content">
+                    <i class="fas fa-gavel"></i>
+                    <h2>Live Bidding Available</h2>
+                    <p>Join exciting live auctions and bid on unique artworks</p>
+                    <a href="{% url 'live_bidding' %}" class="live-bid-btn">View Live Auctions</a>
+                </div>
+            </div>
+
+            <!-- Illustrations Grid -->
+            <div class="illustrations-grid">
+                {% if illustrations %}
+                    {% for illustration in illustrations %}
+                        <div class="illustration-card">
+                            <div class="illustration-image">
+                                <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                                <div class="illustration-overlay">
+                                    <div class="overlay-content">
+                                        <h3>{{ illustration.title }}</h3>
+                                        <p class="artist">By {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
+                                        <p class="price">${{ illustration.price }}</p>
+                                        <div class="overlay-actions">
+                                            <a href="{% url 'illustration_details' illustration.id %}" class="view-btn">
+                                                View Details
+                                            </a>
+                                            {% if illustration.selling_type == "bid" %}
+                                                <a href="{% url 'illustration_details' illustration.id %}" class="bid-btn">
+                                                    <i class="fas fa-gavel"></i>
+                                                    Live Bidding
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'buy_now' illustration.id %}" class="buy-btn">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                    Buy Now
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="illustration-info">
+                                <h3>{{ illustration.title }}</h3>
+                                <p class="category">{{ illustration.category.name }}</p>
+                                <p class="price">${{ illustration.price }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-illustrations">
+                        <i class="fas fa-paint-brush"></i>
+                        <h3>No Illustrations Found</h3>
+                        <p>Try adjusting your filters or check back later for new artworks.</p>
                     </div>
-                {% endfor %}
-            {% else %}
-                <p>No illustrations have been uploaded yet.</p>
+                {% endif %}
+            </div>
+
+            <!-- Pagination -->
+            {% if illustrations.has_other_pages %}
+                <div class="pagination">
+                    {% if illustrations.has_previous %}
+                        <a href="?page={{ illustrations.previous_page_number }}" class="page-link">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    {% endif %}
+                    
+                    {% for num in illustrations.paginator.page_range %}
+                        {% if illustrations.number == num %}
+                            <span class="page-link active">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if illustrations.has_next %}
+                        <a href="?page={{ illustrations.next_page_number }}" class="page-link">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
             {% endif %}
         </div>
-    </div>
+    </section>
 {% endblock %}

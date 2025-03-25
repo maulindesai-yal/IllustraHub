@@ -1,62 +1,141 @@
 {% extends 'main_templates/main_base.html' %}
 
-{% block title %}Illustration Details{% endblock %}
+{% block title %}{{ illustration.title }} - Illustration Details{% endblock %}
 
 {% block content %}
     <div class="illustration-details-container">
         <div class="illustration-image">
-            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}" class="main-image">
+            <div class="image-overlay">
+                <button class="zoom-btn" onclick="toggleZoom()">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+            </div>
         </div>
         <div class="illustration-info">
-            <h1>{{ illustration.title }}</h1>
-            <p class="description"><strong>Description:</strong> {{ illustration.description }}</p>
-            <p class="category"><strong>Category:</strong> {{ illustration.category.name }}</p>
-            <p class="price"><strong>Starting Price:</strong> ${{ illustration.price }}</p>
-            <p class="uploaded-by"><strong>Uploaded By:</strong> {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
-            <p class="uploaded-at"><strong>Uploaded At:</strong> {{ illustration.uploaded_at }}</p>
+            <div class="info-header">
+                <h1>{{ illustration.title }}</h1>
+                <div class="category-badge">{{ illustration.category.name }}</div>
+            </div>
+            
+            <div class="info-section">
+                <div class="description-box">
+                    <h3>Description</h3>
+                    <p>{{ illustration.description }}</p>
+                </div>
+                
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <i class="fas fa-user"></i>
+                        <div class="detail-content">
+                            <span class="label">Artist</span>
+                            <span class="value">{{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-calendar"></i>
+                        <div class="detail-content">
+                            <span class="label">Uploaded</span>
+                            <span class="value">{{ illustration.uploaded_at|date:"F d, Y" }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-tag"></i>
+                        <div class="detail-content">
+                            <span class="label">Starting Price</span>
+                            <span class="value price">${{ illustration.price }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             {% if user.is_authenticated and user == illustration.uploaded_by and not illustration.is_bidding_enabled %}
-                <form method="POST" action="{% url 'start_bidding' illustration.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="start-bidding-btn">Start Live Bidding</button>
-                </form>
+                <div class="action-section">
+                    <form method="POST" action="{% url 'start_bidding' illustration.id %}" class="action-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-cta primary">
+                            <i class="fas fa-gavel"></i>
+                            Start Live Bidding
+                        </button>
+                    </form>
+                </div>
             {% endif %}
 
             {% if illustration.is_bidding_enabled %}
-                <h3>Live Bidding</h3>
-                <p>Current Highest Bid: <strong>${{ highest_bid.amount|default:illustration.price }}</strong> 
-                    {% if highest_bid.user %}
-                        by {{ highest_bid.user.first_name }} {{ highest_bid.user.last_name }}
+                <div class="bidding-section">
+                    <div class="bidding-header">
+                        <h3><i class="fas fa-gavel"></i> Live Bidding</h3>
+                        <div class="bidding-status">
+                            <span class="status-badge active">Active</span>
+                            <span class="timer" id="bidding-timer"></span>
+                        </div>
+                    </div>
+
+                    <div class="current-bid-box">
+                        <div class="bid-amount">
+                            <span class="label">Current Highest Bid</span>
+                            <span class="amount">${{ highest_bid.amount|default:illustration.price }}</span>
+                            {% if highest_bid.user %}
+                                <span class="bidder">by {{ highest_bid.user.first_name }} {{ highest_bid.user.last_name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                        <form method="POST" action="{% url 'place_bid' illustration.id %}" class="bid-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="bid_amount">Your Bid Amount</label>
+                                <div class="bid-input-group">
+                                    <span class="currency">$</span>
+                                    <input type="number" 
+                                           id="bid_amount" 
+                                           name="bid_amount" 
+                                           step="0.1" 
+                                           min="{{ highest_bid.amount|default:illustration.price }}" 
+                                           required
+                                           class="bid-input">
+                                </div>
+                                <span class="min-bid">Minimum bid: ${{ highest_bid.amount|default:illustration.price }}</span>
+                            </div>
+                            <button type="submit" class="btn-cta primary">
+                                <i class="fas fa-gavel"></i>
+                                Place Bid
+                            </button>
+                        </form>
+                        <a href="{% url 'bidding_history' illustration.id %}" class="history-link">
+                            <i class="fas fa-history"></i>
+                            View Bidding History
+                        </a>
+                    {% else %}
+                        <div class="login-prompt">
+                            <i class="fas fa-lock"></i>
+                            <p>Please <a href="{% url 'login' %}">login</a> to place a bid</p>
+                        </div>
                     {% endif %}
-                </p>
 
-                <p><strong>Bidding Ends In:</strong> <span id="bidding-timer"></span></p>
-
-                {% if user.is_authenticated %}
-                    <form method="POST" action="{% url 'place_bid' illustration.id %}">
-                        {% csrf_token %}
-                        <input type="number" name="bid_amount" step="0.1" min="{{ highest_bid.amount|default:illustration.price }}" required>
-                        <button type="submit">Place Bid</button>
-                    </form>
-                    <a href="{% url 'bidding_history' illustration.id %}" class="history-btn">View Bidding History</a>
-                {% else %}
-                    <p><a href="{% url 'login' %}">Login</a> to place a bid.</p>
-                {% endif %}
-
-                {% if user.is_authenticated and user == illustration.uploaded_by %}
-                    <form method="POST" action="{% url 'end_bidding' illustration.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="end-bidding-btn">End Bidding</button>
-                    </form>
-                {% endif %}
-
+                    {% if user.is_authenticated and user == illustration.uploaded_by %}
+                        <form method="POST" action="{% url 'end_bidding' illustration.id %}" class="action-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-cta alert">
+                                <i class="fas fa-stop-circle"></i>
+                                End Bidding
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
             {% endif %}
         </div>
     </div>
 
-    <script>
-        setInterval(updateHighestBid, 5000);  // Refresh bid every 5 seconds
+    <!-- Image Zoom Modal -->
+    <div id="zoomModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="zoomedImage">
+    </div>
 
+    <script>
+        // Bidding Timer
         function updateBiddingTimer() {
             let endTime = new Date("{{ illustration.bidding_end_time|date:'Y-m-d H:i:s' }}").getTime();
             let x = setInterval(function() {
@@ -65,13 +144,54 @@
                 let hours = Math.floor(distance / (1000 * 60 * 60));
                 let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("bidding-timer").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+                
+                const timerElement = document.getElementById("bidding-timer");
                 if (distance < 0) {
                     clearInterval(x);
-                    document.getElementById("bidding-timer").innerHTML = "Bidding Ended";
+                    timerElement.innerHTML = "Bidding Ended";
+                    timerElement.classList.add("ended");
+                } else {
+                    timerElement.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+                    timerElement.classList.remove("ended");
                 }
             }, 1000);
         }
-        updateBiddingTimer();
+
+        // Image Zoom Functionality
+        const modal = document.getElementById("zoomModal");
+        const modalImg = document.getElementById("zoomedImage");
+        const closeBtn = document.getElementsByClassName("close-modal")[0];
+
+        function toggleZoom() {
+            modal.style.display = "flex";
+            modalImg.src = "{{ illustration.image.url }}";
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        modal.onclick = function(e) {
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBiddingTimer();
+            
+            // Add animation to elements
+            const elements = document.querySelectorAll('.illustration-details-container > div');
+            elements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'all 0.5s ease-out';
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
     </script>
 {% endblock %}

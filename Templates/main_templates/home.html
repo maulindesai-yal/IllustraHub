@@ -6,17 +6,54 @@
     <section class="hero-section">
         <div class="slideshow">
             {% for illustration in illustrations %}
-            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+            <div class="slide">
+                <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                <div class="slide-content">
+                    <h2>{{ illustration.title }}</h2>
+                    <p>By {{ illustration.illustrator.user.first_name }}</p>
+                </div>
+            </div>
             {% endfor %}
         </div>
-        <h1>Welcome {% if user.is_authenticated %}{{ request.user.first_name }} to IllustraHub{% else %} to IllustraHub{% endif %}</h1>
-        <p>Connecting talented illustrators with your creative vision.</p>
-        <a href="{% url 'illustration_store' %}" class="btn-cta">Explore Now</a>
+        <div class="hero-content">
+            <h1 class="animate-text">Welcome {% if user.is_authenticated %}{{ request.user.first_name }} to IllustraHub{% else %} to IllustraHub{% endif %}</h1>
+            <p class="animate-text">Connecting talented illustrators with your creative vision.</p>
+            <div class="hero-buttons">
+                <a href="{% url 'illustration_store' %}" class="btn-cta primary">Explore Now</a>
+                <a href="{% url 'illustrators' %}" class="btn-cta secondary">Meet Artists</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll Down</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-paint-brush"></i>
+                    <h3>Unique Artworks</h3>
+                    <p>Discover one-of-a-kind illustrations from talented artists worldwide</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-gavel"></i>
+                    <h3>Live Bidding</h3>
+                    <p>Experience the thrill of real-time art auctions</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Transactions</h3>
+                    <p>Safe and reliable payment processing for all purchases</p>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section class="bidding-section">
         <div class="container">
-            <h2 classs=""section-title>Live Auctions</h2>
+            <h2 class="section-title">Live Auctions</h2>
             <div class="bidding-grid">
                 {% for illustration in live_bidding_illustrations %}
                 <div class="bidding-card">
@@ -25,7 +62,11 @@
                             <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
                             <div class="bidding-card-overlay">
                                 <h3>{{ illustration.title }}</h3>
-                                <p>Current Bid: ${{ illustration.price }}</p>
+                                <p class="current-bid">Current Bid: ${{ illustration.price }}</p>
+                                <div class="bid-timer">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Time Left: 2h 30m</span>
+                                </div>
                             </div>
                         </div>
                         <div class="bidding-card-back">
@@ -38,6 +79,7 @@
                 </div>
                 {% empty %}
                 <div class="no-auctions">
+                    <i class="fas fa-calendar-times"></i>
                     <p>No live auctions at the moment. Check back soon!</p>
                 </div>
                 {% endfor %}
@@ -50,19 +92,43 @@
             <h2 class="section-title">What Our Users Say</h2>
             <div class="testimonial-grid">
                 <div class="testimonial-card">
+                    <div class="testimonial-icon">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
                     <p>"IllustraHub is a game changer! I found beautiful artworks and the bidding experience was smooth."</p>
                     <div class="testimonial-author">
-                        <strong>- Alex, Art Enthusiast</strong>
+                        <img src="https://via.placeholder.com/50" alt="Alex">
+                        <div class="author-info">
+                            <strong>Alex</strong>
+                            <span>Art Enthusiast</span>
+                        </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
+                    <div class="testimonial-icon">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
                     <p>"Selling my paintings has never been easier. The exposure and sales are amazing!"</p>
                     <div class="testimonial-author">
-                        <strong>- Maria, Illustrator</strong>
+                        <img src="https://via.placeholder.com/50" alt="Maria">
+                        <div class="author-info">
+                            <strong>Maria</strong>
+                            <span>Illustrator</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Start Your Art Journey?</h2>
+            <p>Join our community of artists and art enthusiasts today!</p>
+            <div class="cta-buttons">
+                <a href="{% url 'register' %}" class="btn-cta primary">Sign Up Now</a>
+                <a href="{% url 'contact_us' %}" class="btn-cta secondary">Contact Us</a>
+            </div>
+        </div>
+    </section>
 {% endblock %}

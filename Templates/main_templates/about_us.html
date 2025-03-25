@@ -1,30 +1,130 @@
 {% extends 'main_templates/main_base.html' %}
+{% load static %}
 
-{% block title %}About Us{% endblock %}
+{% block title %}About Us - IllustraHub{% endblock %}
 
 {% block content %}
-    <section>
-        <h2>About IllustraHub</h2>
-        <p>IllustraHub is a creative platform dedicated to connecting talented illustrators with art enthusiasts and potential clients.</p>
+<div class="about-page">
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="about-hero-content">
+            <h1>About IllustraHub</h1>
+            <p class="hero-subtitle">Connecting Artists with Art Enthusiasts Worldwide</p>
+        </div>
     </section>
 
-    <section>
-        <h3>Our Mission</h3>
-        <p>We aim to provide a supportive and dynamic marketplace where illustrators can showcase their work, connect with opportunities, and grow their professional networks.</p>
+    <!-- Mission Section -->
+    <section class="about-section mission-section">
+        <div class="container">
+            <div class="mission-content">
+                <div class="mission-text">
+                    <h2>Our Mission</h2>
+                    <p>We aim to provide a supportive and dynamic marketplace where illustrators can showcase their work, connect with opportunities, and grow their professional networks.</p>
+                    <p>At IllustraHub, we believe that every artist deserves a platform to share their unique vision with the world.</p>
+                </div>
+                <div class="mission-image">
+                    <img src="{% static 'image/mission.jpg' %}" alt="Our Mission" class="section-image">
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section>
-        <h3>What We Offer</h3>
-        <ul>
-            <li>A diverse platform for illustrators across multiple genres</li>
-            <li>Easy upload and management of artwork</li>
-            <li>Networking opportunities with potential clients</li>
-            <li>Marketplace for selling illustrations</li>
-        </ul>
+    <!-- Features Section -->
+    <section class="about-section features-section">
+        <div class="container">
+            <h2>What We Offer</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-palette"></i>
+                    <h3>Diverse Platform</h3>
+                    <p>A vibrant community of illustrators across multiple genres, from digital art to traditional illustrations.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-upload"></i>
+                    <h3>Easy Management</h3>
+                    <p>Simple and intuitive tools for uploading, managing, and showcasing your artwork.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Networking</h3>
+                    <p>Connect with potential clients, fellow artists, and industry professionals.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-store"></i>
+                    <h3>Marketplace</h3>
+                    <p>A secure platform for selling your illustrations and reaching a global audience.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section>
-        <h3>Our Team</h3>
-        <p>Founded by passionate artists and technologists who understand the challenges of the creative industry.</p>
+    <!-- Team Section -->
+    <section class="about-section team-section">
+        <div class="container">
+            <h2>Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="{% static 'image/team1.jpg' %}" alt="Team Member 1">
+                    </div>
+                    <h3>John Doe</h3>
+                    <p class="member-role">Founder & CEO</p>
+                    <p class="member-bio">A passionate artist and entrepreneur with 15+ years of experience in the creative industry.</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="{% static 'image/team2.jpg' %}" alt="Team Member 2">
+                    </div>
+                    <h3>Jane Smith</h3>
+                    <p class="member-role">Creative Director</p>
+                    <p class="member-bio">Digital artist and mentor helping artists grow their online presence.</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="{% static 'image/team3.jpg' %}" alt="Team Member 3">
+                    </div>
+                    <h3>Mike Johnson</h3>
+                    <p class="member-role">Technical Lead</p>
+                    <p class="member-bio">Building innovative solutions to empower artists in the digital age.</p>
+                </div>
+            </div>
+        </div>
     </section>
+
+    <!-- Values Section -->
+    <section class="about-section values-section">
+        <div class="container">
+            <h2>Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <i class="fas fa-heart"></i>
+                    <h3>Passion</h3>
+                    <p>We're passionate about supporting artists and fostering creativity.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-handshake"></i>
+                    <h3>Trust</h3>
+                    <p>Building trust through transparency and reliable services.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-globe"></i>
+                    <h3>Global Community</h3>
+                    <p>Connecting artists and art lovers worldwide.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="about-section cta-section">
+        <div class="container">
+            <h2>Join Our Creative Community</h2>
+            <p>Start your journey with IllustraHub today</p>
+            <div class="cta-buttons">
+                <a href="{% url 'register' %}" class="btn-cta primary">Get Started</a>
+                <a href="{% url 'contact_us' %}" class="btn-cta secondary">Contact Us</a>
+            </div>
+        </div>
+    </section>
+</div>
 {% endblock %}
