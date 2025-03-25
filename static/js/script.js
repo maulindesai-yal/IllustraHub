@@ -1,30 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-    let slides = document.querySelectorAll(".slide");
+    const images = document.querySelectorAll(".slideshow img");
     let currentIndex = 0;
 
-    function showSlide(index) {
-        slides.forEach((slide, i) => {
-            slide.classList.remove("active");
-            if (i === index) {
-                slide.classList.add("active");
-            }
-        });
+    function showNextImage() {
+        images[currentIndex].style.opacity = "0";
+        currentIndex = (currentIndex + 1) % images.length;
+        images[currentIndex].style.opacity = "1";
     }
 
-    function nextSlide() {
-        currentIndex = (currentIndex + 1) % slides.length;
-        showSlide(currentIndex);
-    }
-
-    function prevSlide() {
-        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-        showSlide(currentIndex);
-    }
-
-    document.querySelector(".next").addEventListener("click", nextSlide);
-    document.querySelector(".prev").addEventListener("click", prevSlide);
-
-    setInterval(nextSlide, 4000); // Auto-slide every 4 seconds
+    setInterval(showNextImage, 3000); // Change every 3 seconds
 });
 
 // Dynamic Header
@@ -98,22 +82,6 @@ function showError(fieldId, message) {
     errorElement.textContent = message;
     errorElement.style.display = 'block';
 }
-
-// Auto-slider
-let currentSlide = 0;
-const slides = document.querySelectorAll('.slider img');
-
-function nextSlide() {
-    slides[currentSlide].classList.remove('active');
-    currentSlide = (currentSlide + 1) % slides.length;
-    slides[currentSlide].classList.add('active');
-}
-
-if (slides.length > 0) {
-    slides[0].classList.add('active');
-    setInterval(nextSlide, 5000);
-}
-
 
 document.getElementById("openUploadForm").addEventListener("click", function() {
     document.getElementById("uploadPopup").style.display = "block";

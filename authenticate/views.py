@@ -3,6 +3,7 @@ from .forms import CustomUserCreationForm, ProfileUpdateForm
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
+from mains.models import Illustration
 
 
 # Create your views here.
@@ -60,7 +61,13 @@ def logout_view(request):
 
 
 def home_view(request):
-    return render(request, 'main_templates/home.html')
+
+    illustrations = Illustration.objects.all().order_by('-uploaded_at')[:5]
+    live_bidding_illustrations = Illustration.objects.filter(is_bidding_active=True)
+    return render(request, 'main_templates/home.html',{
+        'illustrations': illustrations,
+        'live_bidding_illustrations': live_bidding_illustrations
+    })
 
 
 @login_required
