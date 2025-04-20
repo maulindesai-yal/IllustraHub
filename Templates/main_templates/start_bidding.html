@@ -43,6 +43,13 @@
                                     <span class="value">{{ illustration.category.name }}</span>
                                 </div>
                             </div>
+                            <div class="info-item">
+                                <i class="fas fa-user"></i>
+                                <div class="info-content">
+                                    <span class="label">Artist</span>
+                                    <span class="value">{{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -55,16 +62,24 @@
                         <div class="form-section">
                             <h3><i class="fas fa-clock"></i> Auction Duration</h3>
                             <div class="form-group">
-                                <label for="duration">Select Duration</label>
-                                <select id="duration" name="duration" required class="form-select">
-                                    <option value="24" selected>24 Hours</option>
-                                    <option value="48">2 Days</option>
-                                    <option value="72">3 Days</option>
-                                    <option value="168">7 Days</option>
-                                </select>
-                            </div>
-                            <div class="duration-preview">
-                                <p>Auction will end on: <span id="end-time"></span></p>
+                                <label for="duration">Auction Duration</label>
+                                <div class="duration-inputs" data-base-price="{{ illustration.price }}">
+                                    <div class="duration-option">
+                                        <input type="radio" id="duration-1" name="duration" value="1" checked>
+                                        <label for="duration-1">1 Day</label>
+                                    </div>
+                                    <div class="duration-option">
+                                        <input type="radio" id="duration-3" name="duration" value="3">
+                                        <label for="duration-3">3 Days</label>
+                                    </div>
+                                    <div class="duration-option">
+                                        <input type="radio" id="duration-7" name="duration" value="7">
+                                        <label for="duration-7">7 Days</label>
+                                    </div>
+                                </div>
+                                <div class="end-time-summary">
+                                    <p>Auction will end on: <span id="end-time">Calculating...</span></p>
+                                </div>
                             </div>
                         </div>
 
@@ -108,6 +123,28 @@
                             </div>
                         </div>
 
+                        <div class="form-section">
+                            <h3><i class="fas fa-info-circle"></i> Auction Summary</h3>
+                            <div class="auction-summary">
+                                <div class="summary-item">
+                                    <span class="label">Starting Price</span>
+                                    <span class="value">${{ illustration.price }}</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="label">Duration</span>
+                                    <span class="value" id="duration-summary">24 Hours</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="label">Reserve Price</span>
+                                    <span class="value" id="reserve-summary">Not Set</span>
+                                </div>
+                                <div class="summary-item total">
+                                    <span class="label">Estimated End Time</span>
+                                    <span class="value" id="end-time-summary"></span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-actions">
                             <a href="{% url 'illustration_details' illustration.id %}" class="cancel-btn">
                                 <i class="fas fa-times"></i>
@@ -130,36 +167,5 @@
         <img class="modal-content" id="zoomedImage">
     </div>
 
-    <script>
-        // Update end time preview
-        function updateEndTime() {
-            const duration = document.getElementById('duration').value;
-            const now = new Date();
-            const endTime = new Date(now.getTime() + duration * 60 * 60 * 1000);
-            document.getElementById('end-time').textContent = endTime.toLocaleString();
-        }
-
-        document.getElementById('duration').addEventListener('change', updateEndTime);
-        updateEndTime();
-
-        // Image zoom functionality
-        const modal = document.getElementById("zoomModal");
-        const modalImg = document.getElementById("zoomedImage");
-        const closeBtn = document.getElementsByClassName("close-modal")[0];
-
-        function toggleZoom() {
-            modal.style.display = "flex";
-            modalImg.src = "{{ illustration.image.url }}";
-        }
-
-        closeBtn.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        modal.onclick = function(e) {
-            if (e.target === modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
+    <script src="{% static 'js/script.js' %}"></script>
 {% endblock %}

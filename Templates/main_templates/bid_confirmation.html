@@ -11,45 +11,18 @@
             <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
             <h2>{{ illustration.title }}</h2>
             <p><strong>Your Bid:</strong> ${{ bid.amount }}</p>
-            <p><strong>Highest Bid:</strong> ${{ highest_bid.amount }}</p>
-
-            {% if highest_bid.user == bid.user %}
-                <p class="winner-text">You are the current highest bidder!</p>
-            {% else %}
-                <p class="outbid-text">Another user has placed a higher bid.</p>
-            {% endif %}
-
-            <p><strong>Bidding Ends In:</strong> <span id="bidding-timer"></span></p>
+            <div class="highest-bid-info">
+                <span class="label">Current Highest Bid:</span>
+                <span id="highest-bid" class="amount">${{ highest_bid.amount|default:illustration.price }}</span>
+            </div>
+            <div class="timer-badge">
+                <i class="fas fa-clock"></i>
+                <span id="bidding-timer" data-end-time="{{ illustration.bidding_end_time|date:'Y-m-d H:i:s' }}">Loading...</span>
+            </div>
             <a href="{% url 'illustration_details' illustration.id %}" class="back-to-bidding-btn">Back to Bidding</a>
             <a href="{% url 'live_bidding' %}" class="bid-now-btn">View Other Live Bids</a>
         </div>
     </div>
 
-    <script>
-        function updateHighestBid() {
-            fetch("{% url 'get_highest_bid' illustration.id %}")  
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('highest-bid').innerText = "$" + data;
-                });
-        }
-        setInterval(updateHighestBid, 5000);  
-
-        function updateBiddingTimer() {
-            let endTime = new Date("{{ illustration.bidding_end_time|date:'Y-m-d H:i:s' }}").getTime();
-            let x = setInterval(function() {
-                let now = new Date().getTime();
-                let distance = endTime - now;
-                let hours = Math.floor(distance / (1000 * 60 * 60));
-                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("bidding-timer").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
-                if (distance < 0) {
-                    clearInterval(x);
-                    document.getElementById("bidding-timer").innerHTML = "Bidding Ended";
-                }
-            }, 1000);
-        }
-        updateBiddingTimer();
-    </script>
+    <script src="{% static 'js/script.js' %}"></script>
 {% endblock %}

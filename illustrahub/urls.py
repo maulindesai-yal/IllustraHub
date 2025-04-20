@@ -41,7 +41,8 @@ from mains.views import (
     illustration_bidding_view,
     place_bid,
     live_bidding_view,start_bidding,bidding_history,
-    edit_artwork,delete_artwork
+    edit_artwork,delete_artwork,
+    end_bidding
 )
 
 urlpatterns = [
@@ -79,5 +80,6 @@ urlpatterns = [
     path('start-bidding/<int:illustration_id>/', start_bidding, name='start_bidding'),
     path('bidding-history/<int:illustration_id>/', bidding_history, name='bidding_history'),
     path('illustration_bidding/<int:illustration_id>/', illustration_bidding_view, name='illustration_bidding'),
+    path('illustration/<int:illustration_id>/end_bidding/', end_bidding, name='end_bidding'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #STATIC_URL,STATIC_ROOT

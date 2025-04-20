@@ -1,60 +1,151 @@
 {% extends 'main_templates/main_base.html' %}
 
-{% block title %}Checkout{% endblock %}
+{% block title %}Checkout - IllustraHub{% endblock %}
 
 {% block content %}
-    <div class="checkout-container">
-        <h1>Checkout</h1>
-
-        <div class="illustration-summary">
-            <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
-            <h2>{{ illustration.title }}</h2>
-            <p><strong>Price:</strong> ${{ illustration.price }}</p>
+    <!-- Checkout Hero Section -->
+    <section class="checkout-hero">
+        <div class="hero-content">
+            <h1>Checkout</h1>
+            <p>Complete your purchase securely</p>
         </div>
+    </section>
 
-        <form method="POST">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" value="{{ user_profile.first_name }} {{ user_profile.last_name }}" required>
+    <!-- Checkout Section -->
+    <section class="checkout-section">
+        <div class="container">
+            <div class="checkout-grid">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h2><i class="fas fa-shopping-bag"></i> Order Summary</h2>
+                    <div class="illustration-preview">
+                        <img src="{{ illustration.image.url }}" alt="{{ illustration.title }}">
+                        <div class="preview-info">
+                            <h3>{{ illustration.title }}</h3>
+                            <p class="artist">By {{ illustration.uploaded_by.first_name }} {{ illustration.uploaded_by.last_name }}</p>
+                            <p class="category">{{ illustration.category.name }}</p>
+                            <div class="price-box">
+                                <span class="price-label">Total Amount</span>
+                                <span class="price">${{ illustration.price }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order-details">
+                        <div class="detail-row">
+                            <span>Subtotal</span>
+                            <span>${{ illustration.price }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="detail-row total">
+                            <span>Total</span>
+                            <span>${{ illustration.price }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkout Form -->
+                <div class="checkout-form-container">
+                    <form method="POST" class="checkout-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-section">
+                            <h3><i class="fas fa-user"></i> Personal Information</h3>
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <div class="input-group">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="name" name="name" value="{{ user_profile.first_name }} {{ user_profile.last_name }}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <div class="input-group">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" id="email" name="email" value="{{ user_profile.email }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-map-marker-alt"></i> Shipping Address</h3>
+                            <div class="form-group">
+                                <label for="address">Street Address</label>
+                                <div class="input-group">
+                                    <i class="fas fa-home"></i>
+                                    <input type="text" id="address" name="address" value="{{ user_profile.address|default:'' }}" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <div class="input-group">
+                                        <i class="fas fa-globe"></i>
+                                        <input type="text" id="country" name="country" value="{{ user_profile.country|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <div class="input-group">
+                                        <i class="fas fa-building"></i>
+                                        <input type="text" id="state" name="state" value="{{ user_profile.state|default:'' }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="zip_code">Zip Code</label>
+                                <div class="input-group">
+                                    <i class="fas fa-map-pin"></i>
+                                    <input type="text" id="zip_code" name="zip_code" value="{{ user_profile.zip_code|default:'' }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+                            <div class="form-group">
+                                <label for="payment_method">Select Payment Method</label>
+                                <div class="payment-methods">
+                                    <div class="payment-option">
+                                        <input type="radio" id="credit_card" name="payment_method" value="credit_card" checked>
+                                        <label for="credit_card">
+                                            <i class="fas fa-credit-card"></i>
+                                            Credit Card
+                                        </label>
+                                    </div>
+                                    <div class="payment-option">
+                                        <input type="radio" id="paypal" name="payment_method" value="paypal">
+                                        <label for="paypal">
+                                            <i class="fab fa-paypal"></i>
+                                            PayPal
+                                        </label>
+                                    </div>
+                                    <div class="payment-option">
+                                        <input type="radio" id="bank_transfer" name="payment_method" value="bank_transfer">
+                                        <label for="bank_transfer">
+                                            <i class="fas fa-university"></i>
+                                            Bank Transfer
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="{% url 'view_cart' %}" class="cancel-btn">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to Cart
+                            </a>
+                            <button type="submit" class="place-order-btn">
+                                <i class="fas fa-lock"></i>
+                                Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="{{ user_profile.email }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="address">Street Address</label>
-                <input type="text" id="address" name="address" value="{{ user_profile.address|default:'' }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="country">Country</label>
-                <input type="text" id="country" name="country" value="{{ user_profile.country|default:'' }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="state">State</label>
-                <input type="text" id="state" name="state" value="{{ user_profile.state|default:'' }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="zip_code">Zip Code</label>
-                <input type="text" id="zip_code" name="zip_code" value="{{ user_profile.zip_code|default:'' }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="payment_method">Payment Method</label>
-                <select id="payment_method" name="payment_method" required>
-                    <option value="credit_card">Credit Card</option>
-                    <option value="paypal">PayPal</option>
-                    <option value="bank_transfer">Bank Transfer</option>
-                </select>
-            </div>
-
-            <button type="submit" class="checkout-btn">Place Order</button>
-        </form>
-    </div>
+        </div>
+    </section>
 {% endblock %}

@@ -274,23 +274,53 @@ def start_bidding(request, illustration_id):
         messages.error(request, "You do not have permission to start bidding for this illustration.")
         return redirect('illustration_details', illustration_id=illustration.id)
     
-    if illustration.is_bidding_active:
-        messages.warning(request, "Bidding is already active.")
-    else:
-        illustration.start_bidding()
-        messages.success(request, "Live bidding started!")
-    return redirect(reverse('live_bidding'))
+    if request.method == 'POST':
+        # Handle the form submission
+        duration = int(request.POST.get('duration', 24))
+        reserve_price = request.POST.get('reserve_price')
+        auto_extend = request.POST.get('auto_extend') == 'on'
+        notify_bids = request.POST.get('notify_bids') == 'on'
+        
+        # Set the bidding end time based on duration
+        illustration.bidding_end_time = now() + timedelta(hours=duration)
+        illustration.is_bidding_active = True
+        illustration.save()
+        
+        messages.success(request, "Live bidding started successfully!")
+        return redirect('illustration_bidding', illustration_id=illustration.id)
+    
+    # For GET request, show the configuration page
+    return render(request, 'main_templates/start_bidding.html', {
+        'illustration': illustration
+    })
 
 
+@login_required
 def end_bidding(request, illustration_id):
     """End bidding early for an illustration"""
     illustration = get_object_or_404(Illustration, id=illustration_id, uploaded_by=request.user)
+    
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('illustration_details', illustration_id=illustration.id)
+    
     if not illustration.is_bidding_active:
         messages.warning(request, "Bidding is not active.")
+        return redirect('illustration_details', illustration_id=illustration.id)
+    
+    # Get the highest bid
+    highest_bid = illustration.bids.order_by('-amount').first()
+    
+    # End the bidding
+    illustration.is_bidding_active = False
+    illustration.bidding_end_time = now()
+    illustration.save()
+    
+    if highest_bid:
+        messages.success(request, f"Auction ended. Highest bid: ${highest_bid.amount} by {highest_bid.user.get_full_name()}")
     else:
-        illustration.end_bidding()
-        messages.success(request, "Bidding has ended.")
-
+        messages.info(request, "Auction ended. No bids were placed.")
+    
     return redirect('illustration_details', illustration_id=illustration.id)
 
 @login_required

@@ -61,10 +61,12 @@
             <div class="section-header">
                 <h2>Portfolio</h2>
                 <div class="portfolio-filters">
-                    <button class="filter-btn active" data-filter="all">All Works</button>
-                    <button class="filter-btn" data-filter="digital">Digital Art</button>
-                    <button class="filter-btn" data-filter="traditional">Traditional</button>
-                    <button class="filter-btn" data-filter="vector">Vector Art</button>
+                    <select id="portfolio-filter" class="form-select">
+                        <option value="all">All Works</option>
+                        <option value="available">Available</option>
+                        <option value="sold">Sold</option>
+                        <option value="auction">In Auction</option>
+                    </select>
                 </div>
             </div>
 
@@ -116,29 +118,5 @@
 </div>
 
 <!-- Portfolio Filter Script -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
-            button.classList.add('active');
-
-            const filterValue = button.getAttribute('data-filter');
-
-            portfolioItems.forEach(item => {
-                if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-    });
-});
-</script>
+<script src="{% static 'js/script.js' %}"></script>
 {% endblock %}
