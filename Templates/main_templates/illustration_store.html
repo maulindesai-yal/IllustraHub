@@ -15,44 +15,46 @@
     <section class="store-section">
         <div class="container">
             <!-- Filters -->
-            <div class="store-filters">
-                <div class="filter-group">
-                    <label for="category">Category</label>
-                    <select id="category" class="filter-select">
-                        <option value="">All Categories</option>
-                        {% for category in categories %}
-                            <option value="{{ category.id }}">{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
+            <form id="filter-form" method="GET" action="{% url 'illustration_store' %}">
+                <div class="store-filters">
+                    <div class="filter-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" class="filter-select">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if current_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="price_range">Price Range</label>
+                        <select id="price_range" name="price_range" class="filter-select">
+                            <option value="">All Prices</option>
+                            <option value="0-50" {% if current_price_range == '0-50' %}selected{% endif %}>Under $50</option>
+                            <option value="50-100" {% if current_price_range == '50-100' %}selected{% endif %}>$50 - $100</option>
+                            <option value="100-200" {% if current_price_range == '100-200' %}selected{% endif %}>$100 - $200</option>
+                            <option value="200+" {% if current_price_range == '200+' %}selected{% endif %}>Over $200</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sort_by">Sort By</label>
+                        <select id="sort_by" name="sort_by" class="filter-select">
+                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest First</option>
+                            <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Most Popular</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="selling_type">Selling Type</label>
+                        <select id="selling_type" name="selling_type" class="filter-select">
+                            <option value="">All Types</option>
+                            <option value="sell" {% if current_selling_type == 'sell' %}selected{% endif %}>Fixed Price</option>
+                            <option value="bid" {% if current_selling_type == 'bid' %}selected{% endif %}>Live Bidding</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label for="price_range">Price Range</label>
-                    <select id="price_range" class="filter-select">
-                        <option value="">All Prices</option>
-                        <option value="0-50">Under $50</option>
-                        <option value="50-100">$50 - $100</option>
-                        <option value="100-200">$100 - $200</option>
-                        <option value="200+">Over $200</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="sort_by">Sort By</label>
-                    <select id="sort_by" class="filter-select">
-                        <option value="newest">Newest First</option>
-                        <option value="price_low">Price: Low to High</option>
-                        <option value="price_high">Price: High to Low</option>
-                        <option value="popular">Most Popular</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="selling_type">Selling Type</label>
-                    <select id="selling_type" class="filter-select">
-                        <option value="">All Types</option>
-                        <option value="sell">Fixed Price</option>
-                        <option value="bid">Live Bidding</option>
-                    </select>
-                </div>
-            </div>
+            </form>
 
             <!-- Live Bidding Banner -->
             <div class="live-bidding-banner">
@@ -81,7 +83,7 @@
                                                 View Details
                                             </a>
                                             {% if illustration.selling_type == "bid" %}
-                                                <a href="{% url 'illustration_details' illustration.id %}" class="bid-btn">
+                                                <a href="{% url 'illustration_bidding' illustration.id %}" class="bid-btn">
                                                     <i class="fas fa-gavel"></i>
                                                     Live Bidding
                                                 </a>
@@ -137,4 +139,35 @@
             {% endif %}
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all filter select elements
+            const filterSelects = document.querySelectorAll('.filter-select');
+            
+            // Add change event listener to each select
+            filterSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    // Submit the form when any filter changes
+                    document.getElementById('filter-form').submit();
+                });
+            });
+
+            // Update pagination links to maintain filter parameters
+            const paginationLinks = document.querySelectorAll('.pagination a');
+            paginationLinks.forEach(link => {
+                const currentUrl = new URL(link.href);
+                const formData = new FormData(document.getElementById('filter-form'));
+                
+                // Add all filter parameters to the pagination link
+                for (const [key, value] of formData.entries()) {
+                    if (value) {
+                        currentUrl.searchParams.set(key, value);
+                    }
+                }
+                
+                link.href = currentUrl.toString();
+            });
+        });
+    </script>
 {% endblock %}

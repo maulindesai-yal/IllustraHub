@@ -3070,16 +3070,31 @@ footer {
     background: var(--background-light);
     border-radius: 20px;
     transition: all 0.3s ease;
+    text-decoration: none;
+    border: none;
 }
 
 .category-stats .stat:hover {
-    background: var(--primary-accent);
-    color: var(--primary-dark);
     transform: translateY(-2px);
 }
 
+.category-stats .stat:first-child:hover {
+    background: #4CAF50;
+    color: white;
+}
+
+.category-stats .stat:last-child:hover {
+    background: #2196F3;
+    color: white;
+}
+
 .category-stats .stat i {
-    color: var(--primary-accent);
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.category-stats .stat:hover i {
+    color: white;
 }
 
 /* Illustrators Grid */
@@ -3191,16 +3206,31 @@ footer {
     background: var(--background-light);
     border-radius: 20px;
     transition: all 0.3s ease;
+    text-decoration: none;
+    border: none;
 }
 
 .illustrator-stats .stat:hover {
-    background: var(--primary-accent);
-    color: var(--primary-dark);
     transform: translateY(-2px);
 }
 
+.illustrator-stats .stat:first-child:hover {
+    background: #4CAF50;
+    color: white;
+}
+
+.illustrator-stats .stat:last-child:hover {
+    background: #2196F3;
+    color: white;
+}
+
 .illustrator-stats .stat i {
-    color: var(--primary-accent);
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.illustrator-stats .stat:hover i {
+    color: white;
 }
 
 /* My Artworks Page Styles */
@@ -3584,16 +3614,16 @@ footer {
 /* Empty State */
 .empty-state {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 3rem;
     background: white;
     border-radius: 16px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .empty-state i {
-    font-size: 3rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
+    font-size: 4rem;
+    color: var(--primary-accent);
+    margin-bottom: 1.5rem;
 }
 
 .empty-state h3 {
@@ -3605,6 +3635,10 @@ footer {
 .empty-state p {
     color: var(--text-secondary);
     margin-bottom: 2rem;
+}
+
+.empty-state .upload-btn {
+    margin: 0 auto;
 }
 
 /* Cart Page Styles */
@@ -5035,4 +5069,127 @@ footer {
 .artwork-actions .btn-secondary:hover {
     background: linear-gradient(135deg, #616161, #424242);
     transform: translateY(-2px);
+}
+
+/* Add to Cart Button Styles */
+.illustration-overlay .overlay-actions .add-to-cart-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-accent, #3498db);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn:hover {
+    background: var(--primary-accent-dark, #2980b9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn:hover i {
+    transform: scale(1.1);
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn:hover::after {
+    width: 200%;
+    height: 200%;
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn:disabled:hover {
+    background: #cccccc;
+    transform: none;
+    box-shadow: none;
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn:disabled i {
+    transform: none;
+}
+
+/* Loading state */
+.illustration-overlay .overlay-actions .add-to-cart-btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.illustration-overlay .overlay-actions .add-to-cart-btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid white;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Login to Add button styles */
+.illustration-overlay .overlay-actions .cart-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-accent, #3498db);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 1rem;
+    text-decoration: none;
+}
+
+.illustration-overlay .overlay-actions .cart-btn:hover {
+    background: var(--primary-accent-dark, #2980b9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }

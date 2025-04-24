@@ -30,7 +30,7 @@
                             </div>
                         {% endwith %}
                         <div class="profile-info">
-                            <h1>{{ illustrator.get_full_name }}'s {{ category.name }} Collection</h1>
+                            <h1>{{ illustrator.get_full_name.title }}'s {{ category.name }} Collection</h1>
                             <div class="profile-stats">
                                 <span class="stat">
                                     <i class="fas fa-paint-brush"></i>
@@ -73,7 +73,7 @@
                                             {% if user.is_authenticated %}
                                                 <form action="{% url 'add_to_cart' illustration.id %}" method="POST" class="cart-form">
                                                     {% csrf_token %}
-                                                    <button type="submit" class="cart-btn">
+                                                    <button type="submit" class="add-to-cart-btn">
                                                         <i class="fas fa-shopping-cart"></i>
                                                         Add to Cart
                                                     </button>

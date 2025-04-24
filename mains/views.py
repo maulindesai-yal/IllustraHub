@@ -7,7 +7,7 @@ from mains.models import Illustration ,Category, CartItem,Bid
 from authenticate.models import CustomUser
 from django.db.models import Count, F, Q, Max
 from authenticate.country_choices import COUNTRY_CHOICES
-from django.utils.timezone import now,timedelta
+from django.utils import timezone
 from django.http import JsonResponse,HttpResponse
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -200,8 +200,53 @@ def illustrators_view(request):
 @login_required
 def illustration_store_view(request):
     illustrations = Illustration.objects.select_related('category')
-    return render (request , 'main_templates/illustration_store.html', {
-        'illustrations' : illustrations
+    
+    # Get filter parameters
+    category_id = request.GET.get('category')
+    price_range = request.GET.get('price_range')
+    sort_by = request.GET.get('sort_by')
+    selling_type = request.GET.get('selling_type')
+    
+    # Apply category filter
+    if category_id:
+        illustrations = illustrations.filter(category_id=category_id)
+    
+    # Apply price range filter
+    if price_range:
+        if price_range == '0-50':
+            illustrations = illustrations.filter(price__lte=50)
+        elif price_range == '50-100':
+            illustrations = illustrations.filter(price__gt=50, price__lte=100)
+        elif price_range == '100-200':
+            illustrations = illustrations.filter(price__gt=100, price__lte=200)
+        elif price_range == '200+':
+            illustrations = illustrations.filter(price__gt=200)
+    
+    # Apply selling type filter
+    if selling_type:
+        illustrations = illustrations.filter(selling_type=selling_type)
+    
+    # Apply sorting
+    if sort_by:
+        if sort_by == 'newest':
+            illustrations = illustrations.order_by('-uploaded_at')
+        elif sort_by == 'price_low':
+            illustrations = illustrations.order_by('price')
+        elif sort_by == 'price_high':
+            illustrations = illustrations.order_by('-price')
+        elif sort_by == 'popular':
+            illustrations = illustrations.annotate(bid_count=Count('bids')).order_by('-bid_count')
+    
+    # Get all categories for the filter dropdown
+    categories = Category.objects.all()
+    
+    return render(request, 'main_templates/illustration_store.html', {
+        'illustrations': illustrations,
+        'categories': categories,
+        'current_category': category_id,
+        'current_price_range': price_range,
+        'current_sort': sort_by,
+        'current_selling_type': selling_type
     })
 
 
@@ -241,26 +286,62 @@ def about_us_view(request):
 
 @login_required
 def place_bid(request, illustration_id):
-    illustration = get_object_or_404(Illustration, id=illustration_id, is_bidding_active=True)
-    if illustration.bidding_end_time < now():
-        return JsonResponse({'success': False, 'error': "Bidding has ended."})
+    if request.method == 'POST':
+        illustration = get_object_or_404(Illustration, id=illustration_id)
+        
+        # Get bid amount from either JSON or form data
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+            bid_amount = float(data.get('amount'))
+        else:
+            bid_amount = float(request.POST.get('bid_amount'))
+        
+        # Get current highest bid
+        current_bid = Bid.objects.filter(illustration=illustration).order_by('-amount').first()
+        current_bid_amount = current_bid.amount if current_bid else illustration.price
+        
+        # Validate bid
+        if bid_amount <= current_bid_amount:
+            if request.content_type == 'application/json':
+                return JsonResponse({
+                    'success': False,
+                    'error': f"Bid amount must be higher than current bid (${current_bid_amount})."
+                })
+            messages.error(request, f"Bid amount must be higher than current bid (${current_bid_amount}).")
+            return redirect('illustration_bidding', illustration_id=illustration_id)
+        
+        # Create new bid
+        new_bid = Bid.objects.create(
+            illustration=illustration,
+            user=request.user,
+            amount=bid_amount
+        )
+        
+        # Send WebSocket message
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f'bidding_{illustration_id}',
+            {
+                'type': 'bid_update',
+                'bid_amount': bid_amount,
+                'bidder': request.user.email,
+                'bidder_name': request.user.get_full_name(),
+                'bidder_image': request.user.profile_image.url if hasattr(request.user, 'profile_image') else '/static/images/default-avatar.png',
+                'timestamp': timezone.now().isoformat(),
+                'message': 'New bid placed'
+            }
+        )
+        
+        if request.content_type == 'application/json':
+            return JsonResponse({
+                'success': True,
+                'message': 'Bid placed successfully!'
+            })
+        
+        messages.success(request, "Bid placed successfully!")
+        return redirect('illustration_bidding', illustration_id=illustration_id)
     
-    bid_amount = float(request.POST.get('bid_amount', 0))
-    highest_bid = illustration.bids.first()
-
-    if bid_amount <= (highest_bid.amount if highest_bid else illustration.price):
-        return JsonResponse({'success': False, 'error': "Your bid must be higher."})
-    
-    new_bid = Bid.objects.create(illustration=illustration, user=request.user, amount=bid_amount)
-    async_to_sync(channel_layer.group_send)(
-        f'bid_{illustration.id}',
-        {
-            'type': 'bid_update',
-            'bidder': request.user.username,
-            'bid_amount': str(new_bid.amount)
-        }
-    )
-    return JsonResponse({'success': True, 'bidder': request.user.username, 'bid_amount': new_bid.amount})
+    return redirect('illustration_bidding', illustration_id=illustration_id)
 
 channel_layer = get_channel_layer()
 
@@ -282,7 +363,7 @@ def start_bidding(request, illustration_id):
         notify_bids = request.POST.get('notify_bids') == 'on'
         
         # Set the bidding end time based on duration
-        illustration.bidding_end_time = now() + timedelta(hours=duration)
+        illustration.bidding_end_time = timezone.now() + timedelta(hours=duration)
         illustration.is_bidding_active = True
         illustration.save()
         
@@ -313,7 +394,7 @@ def end_bidding(request, illustration_id):
     
     # End the bidding
     illustration.is_bidding_active = False
-    illustration.bidding_end_time = now()
+    illustration.bidding_end_time = timezone.now()
     illustration.save()
     
     if highest_bid:
@@ -396,16 +477,33 @@ def live_bidding_view(request):
 @login_required
 def illustration_bidding_view(request, illustration_id):
     illustration = get_object_or_404(Illustration, id=illustration_id)
-    bids = Bid.objects.filter(illustration=illustration).order_by('-timestamp')
-    highest_bid = bids.first()
-    bid_count = bids.count()
-
-    return render(request, 'main_templates/illustration_bidding.html', {
+    
+    # Check if bidding is active
+    if not illustration.is_bidding_active:
+        messages.warning(request, "Bidding is not active for this illustration.")
+        return redirect('illustration_details', illustration_id=illustration_id)
+    
+    # Get bidding history
+    bidding_history = Bid.objects.filter(illustration=illustration).order_by('-timestamp')
+    
+    # Get current highest bid
+    current_bid = bidding_history.first()
+    current_bid_amount = current_bid.amount if current_bid else illustration.price
+    
+    # Calculate time remaining
+    time_remaining = None
+    if illustration.bidding_end_time:
+        time_remaining = illustration.bidding_end_time - timezone.now()
+    
+    context = {
         'illustration': illustration,
-        'bids': bids,
-        'highest_bid': highest_bid,
-        'bid_count': bid_count,
-    })
+        'bidding_history': bidding_history,
+        'time_remaining': time_remaining,
+        'current_bid': current_bid_amount,
+        'min_bid': current_bid_amount + 1 if current_bid_amount else illustration.price,
+    }
+    
+    return render(request, 'main_templates/illustration_bidding.html', context)
 
 @login_required
 def bidding_history(request, illustration_id):
@@ -420,19 +518,25 @@ def bidding_history(request, illustration_id):
 @login_required
 def add_to_cart(request, illustration_id):
     illustration = get_object_or_404(Illustration, id=illustration_id)
-
     cart_item, created = CartItem.objects.get_or_create(
-        user = request.user,
+        user=request.user,
         illustration=illustration,
-        defaults={ 'quantity' : 1 }
+        defaults={'quantity': 1}
     )
-
+    
     if not created:
         cart_item.quantity += 1
         cart_item.save()
-
-    messages.success(request, f"{illustration.title} added to cart successfully.")
-    return redirect('illustrator_category_collection', illustration.category.id, illustration.uploaded_by.email)
+    
+    messages.success(request, f'Added {illustration.title} to your cart')
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': f'Added {illustration.title} to your cart'
+        })
+    
+    return redirect('cart')
 
 
 @login_required
