@@ -5193,3 +5193,221 @@ footer {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
+
+/* Live Bidding Page Styles */
+.live-bidding-hero {
+    position: relative;
+    height: 400px;
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-accent));
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 3rem;
+}
+
+.live-bidding-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/static/images/hero-bg.jpg') center/cover;
+    opacity: 0.2;
+    z-index: 1;
+}
+
+.live-bidding-hero .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 2rem;
+}
+
+.live-bidding-hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.live-bidding-hero p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.live-bidding-section {
+    padding: 4rem 0;
+    background-color: #f8f9fa;
+}
+
+.live-bidding-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.live-bidding-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.live-bidding-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.live-bidding-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.live-bidding-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.live-bidding-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.live-bidding-card:hover .live-bidding-image img {
+    transform: scale(1.05);
+}
+
+.live-bidding-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.live-bidding-card:hover .live-bidding-overlay {
+    opacity: 1;
+}
+
+.live-bidding-info {
+    padding: 1.5rem;
+}
+
+.live-bidding-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--primary-dark);
+}
+
+.live-bidding-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.live-bidding-category {
+    font-size: 0.875rem;
+    color: var(--secondary-accent);
+    font-weight: 500;
+}
+
+.live-bidding-price {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--positive-action);
+}
+
+.live-bidding-timer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.live-bidding-timer i {
+    color: var(--alert-color);
+}
+
+.live-bidding-timer span {
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+.live-bidding-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.live-bidding-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.live-bidding-btn.primary {
+    background-color: var(--secondary-accent);
+    color: white;
+}
+
+.live-bidding-btn.primary:hover {
+    background-color: #4338ca;
+    transform: translateY(-2px);
+}
+
+.live-bidding-btn.secondary {
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+.live-bidding-btn.secondary:hover {
+    background-color: #1e293b;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .live-bidding-hero {
+        height: 300px;
+    }
+
+    .live-bidding-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .live-bidding-hero p {
+        font-size: 1rem;
+    }
+
+    .live-bidding-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .live-bidding-actions {
+        flex-direction: column;
+    }
+}

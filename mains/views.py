@@ -424,9 +424,17 @@ def buy_now(request, illustration_id):
 
 
 @login_required
-def checkout_page(request, illustration_id):
-    illustration = get_object_or_404(Illustration, id=illustration_id)
-
+def checkout_page(request, illustration_id=None):
+    if illustration_id:
+        # Single item checkout
+        illustration = get_object_or_404(Illustration, id=illustration_id)
+        items = [{'illustration': illustration, 'quantity': 1}]
+    else:
+        # Cart checkout
+        cart_items = CartItem.objects.filter(user=request.user)
+        if not cart_items.exists():
+            return redirect('view_cart')
+        items = [{'illustration': item.illustration, 'quantity': item.quantity} for item in cart_items]
 
     user = request.user
     user_profile = CustomUser.objects.get(email=user.email)
@@ -444,11 +452,15 @@ def checkout_page(request, illustration_id):
         # Here, you would typically save the order in the database
         # Example: Order.objects.create(user=request.user, illustration=illustration, ...)
 
+        # Clear cart if it was a cart checkout
+        if not illustration_id:
+            cart_items.delete()
+
         # Redirect to a success page
         return redirect('order_success')
 
     return render(request, 'main_templates/checkout.html', {
-        'illustration': illustration,
+        'items': items,
         'user_profile': user_profile
     })
 
